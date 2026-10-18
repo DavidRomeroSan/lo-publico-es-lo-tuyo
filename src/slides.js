@@ -1,6 +1,7 @@
 // Construye las láminas (stories) de cada versión.
 import { P, NOVES, US, FACTS, SITE } from './data.js';
 import { ico, ROW } from './icons.js';
+import { art } from './art.js';
 import { isStudent, WORKER, GRP_ICO, CLUB, CLUB_B } from './questions.js';
 import { pickFacts } from './compute.js';
 
@@ -18,7 +19,7 @@ const pctBars = (vida, vt) => `<div class="pct">${vida.filter((x) => x[1] > 0).s
 
 const factsBlock = (F) => `<div class="facts">${F.map(([i, b, t]) => `<div>${ico(i)}<span><b>${b}</b>${t}</span></div>`).join('')}</div>`;
 
-const closing = `<div class="icorow">${ROW.slice(0, 6).map((k) => ico(k)).join('')}</div><h2 class="disp l">Antes de conocer el mundo, ya había algo cuidando de ti.</h2><p class="eyebrow">${SITE.lema}</p>`;
+const closing = `<div class="mosaic">${['hospital', 'school', 'bus', 'house', 'tree', 'fire'].map((k) => art(k, 'tile')).join('')}</div><h2 class="disp l">Antes de conocer el mundo, ya había algo cuidando de ti.</h2><p class="eyebrow">${SITE.lema}</p>`;
 
 const cardSlide = `<div id="cardBox" class="cardbox"><p class="small">Preparando tu tarjeta…</p></div>
   <div class="cardactions"><button class="btn" id="shareBtn" type="button">Compartir</button><button class="btn ghost" id="dlBtn" type="button">Descargar imagen</button></div>
@@ -27,8 +28,8 @@ const cardSlide = `<div id="cardBox" class="cardbox"><p class="small">Preparando
 export function buildA(r, a) {
   const SL = [];
   const city = r.c.n;
-  SL.push(['red', `${ico('heart', 'hero')}<p class="year">${Y}</p><h2 class="disp l">Tu año en lo público</h2><p>Lo hemos calculado con lo que nos has contado y con precios reales de ${city}.</p>`]);
-  SL.push(['ink', `${ico('lamp', 'hero')}<p class="eyebrow">Este año</p><p class="big">${int(r.veces)}</p><p>veces que lo público ha estado ahí: te ha atendido, te ha llevado, te ha enseñado, te ha cuidado. Y cada día ha encendido tu calle y ha recogido tu basura.</p>`]);
+  SL.push(['red', `${art('heart')}<p class="year">${Y}</p><h2 class="disp l">Tu año en lo público</h2><p>Lo hemos calculado con lo que nos has contado y con precios reales de ${city}.</p>`]);
+  SL.push(['ink', `${art('lamp')}<p class="eyebrow">Este año</p><p class="big">${int(r.veces)}</p><p>veces que lo público ha estado ahí: te ha atendido, te ha llevado, te ha enseñado, te ha cuidado. Y cada día ha encendido tu calle y ha recogido tu basura.</p>`]);
 
   if (a.emerg) {
     const t = {
@@ -36,40 +37,40 @@ export function buildA(r, a) {
       dana: ['El agua entró donde no debía.', 'Y llegaron ellos: bomberos, UME, protección civil. Achicando, rescatando, sin mirar el reloj.'],
       otra: ['Pasó algo que nadie espera.', 'Y en minutos había alguien llamando a tu puerta para ayudarte.']
     }[a.emerg];
-    SL.push(['red', `${ico('fire', 'hero')}<p class="eyebrow">Este año te salvaron</p><h2 class="disp l">${t[0]}</h2><p>${t[1]}</p><p class="small">Lo que vale eso no cabe en una cifra.</p>`]);
+    SL.push(['red', `${art('fire')}<p class="eyebrow">Este año te salvaron</p><h2 class="disp l">${t[0]}</h2><p>${t[1]}</p><p class="small">Lo que vale eso no cabe en una cifra.</p>`]);
   }
 
   if (r.ranked.length) {
     const top = r.ranked[0][1];
-    SL.push(['white', `${ico(GRP_ICO[top.grp] || 'heart', 'hero')}<p class="eyebrow acc">Tu nº 1 del año</p><h2 class="disp xl">${top.label}</h2><p>Sin lo público, solo esto te habría costado <b class="acc">${eur(top.v)}</b> en ${city}.</p>`]);
+    SL.push(['white', `${art(GRP_ICO[top.grp] || 'heart')}<p class="eyebrow acc">Tu nº 1 del año</p><h2 class="disp xl">${top.label}</h2><p>Sin lo público, solo esto te habría costado <b class="acc">${eur(top.v)}</b> en ${city}.</p>`]);
     const t5 = r.ranked.slice(0, 5);
     const max = t5[0][1].v;
-    SL.push(['red', `<p class="eyebrow">Tu top de lo público</p><ol class="rank">${t5.map(([, x], i) => `<li><span class="n">${i + 1}</span><span class="name">${x.label}</span><span class="eur">${eur(x.v)}</span><span class="bar"><i style="width:${Math.max(4, (x.v / max) * 100)}%"></i></span></li>`).join('')}</ol><p class="small">Lo que pagarías sin lo público, a precios privados de ${city}.</p>`]);
+    SL.push(['red', `${art('hands', 'sm')}<p class="eyebrow">Tu top de lo público</p><ol class="rank">${t5.map(([, x], i) => `<li><span class="n">${i + 1}</span><span class="name">${x.label}</span><span class="eur">${eur(x.v)}</span><span class="bar"><i style="width:${Math.max(4, (x.v / max) * 100)}%"></i></span></li>`).join('')}</ol><p class="small">Lo que pagarías sin lo público, a precios privados de ${city}.</p>`]);
   }
 
-  SL.push(['ink', `${ico('city', 'hero')}<p class="eyebrow">Lo que no ves</p><p class="big m">${eur(NOVES)}</p><p>pone lo público cada año por ti en cosas que usas sin darte cuenta.</p><div class="split"><div><span>Seguridad, bomberos y emergencias</span><span>${eur(P.seguridad)}</span></div><div><span>Agua, alumbrado, residuos y medio ambiente</span><span>${eur(P.ciudad)}</span></div><div><span>Cultura, ocio y deporte</span><span>${eur(P.ocio)}</span></div></div><p class="small">Gasto público por habitante en 2024 (IGAE).</p>`]);
+  SL.push(['ink', `${art('city')}<p class="eyebrow">Lo que no ves</p><p class="big m">${eur(NOVES)}</p><p>pone lo público cada año por ti en cosas que usas sin darte cuenta.</p><div class="split"><div><span>Seguridad, bomberos y emergencias</span><span>${eur(P.seguridad)}</span></div><div><span>Agua, alumbrado, residuos y medio ambiente</span><span>${eur(P.ciudad)}</span></div><div><span>Cultura, ocio y deporte</span><span>${eur(P.ocio)}</span></div></div><p class="small">Gasto público por habitante en 2024 (IGAE).</p>`]);
 
-  SL.push(['pink', `<p class="eyebrow acc">Lo público ha mejorado</p>${factsBlock(pickFacts(a, r))}`]);
+  SL.push(['pink', `${art('city', 'sm')}<p class="eyebrow acc">Lo público ha mejorado</p>${factsBlock(pickFacts(a, r))}`]);
 
   const cl = CLUB[r.club];
-  SL.push(['ink', `${ico(GRP_ICO[r.club] || 'heart', 'hero')}<p class="eyebrow">Tu club</p><h2 class="disp xl"><span class="acc">${cl[0]}</span></h2><p>${cl[1]}</p>`]);
+  SL.push(['ink', `${art(GRP_ICO[r.club] || 'heart')}<p class="eyebrow">Tu club</p><h2 class="disp xl"><span class="acc">${cl[0]}</span></h2><p>${cl[1]}</p>`]);
 
   if (a.hijos && (a.cole || a.infantil)) {
     const vidaHijo = 3 * P.infantil * r.c.f + 15 * P.colePriv * r.c.f;
     const n = Math.max(1, (a.cole || 0) + (a.infantil || 0));
-    SL.push(['red', `${ico('school', 'hero')}<p class="eyebrow">Tus hijos en lo público</p><p class="big m">${eur(vidaHijo)}</p><p>te costaría criar a cada hijo en la privada en ${city}, de los 0 a los 18, solo en escuela infantil y colegio.</p>${n > 1 ? `<p>Con ${n} en la pública: <b class="acc">${eur(n * vidaHijo)}</b>.</p>` : ''}`]);
+    SL.push(['red', `${art('school')}<p class="eyebrow">Tus hijos en lo público</p><p class="big m">${eur(vidaHijo)}</p><p>te costaría criar a cada hijo en la privada en ${city}, de los 0 a los 18, solo en escuela infantil y colegio.</p>${n > 1 ? `<p>Con ${n} en la pública: <b class="acc">${eur(n * vidaHijo)}</b>.</p>` : ''}`]);
   }
 
   const w = WORKER[a.worker] || WORKER.enfermera;
-  SL.push(['white', `${ico(w[2], 'hero')}<p class="eyebrow acc">Tu persona del año</p><h2 class="disp l">${w[0]}</h2><p class="lg">${w[1]}</p>`]);
+  SL.push(['white', `${art(w[2])}<p class="eyebrow acc">Tu persona del año</p><h2 class="disp l">${w[0]}</h2><p class="lg">${w[1]}</p>`]);
 
-  SL.push(['red', `<p class="year">${Y}</p><p class="eyebrow">Lo público te ha salvado de pagar</p><p class="big m">${eur(r.personal)}</p><p>este año, solo a ti. Sin lo público, esto habría salido de tu bolsillo.</p>`]);
+  SL.push(['red', `${art('heart', 'sm')}<p class="year">${Y}</p><p class="eyebrow">Lo público te ha salvado de pagar</p><p class="big m">${eur(r.personal)}</p><p>este año, solo a ti. Sin lo público, esto habría salido de tu bolsillo.</p>`]);
   if ((a.adultos || 1) > 1 || r.kids > 0) {
-    SL.push(['pink', `${ico('house', 'hero')}<p class="eyebrow acc">Y a tu casa</p><p class="big m acc-text">${eur(r.casa)}</p><div class="split"><div><span>Tú</span><span>${eur(r.personal)}</span></div>${Object.values(r.K).map((x) => `<div><span>${x.label}</span><span>${eur(x.v)}</span></div>`).join('')}${r.otros ? `<div><span>${r.otros} adulto${r.otros > 1 ? 's' : ''} más (gasto público medio)</span><span>${eur(r.otrosV)}</span></div>` : ''}</div>`]);
+    SL.push(['pink', `${art('house')}<p class="eyebrow acc">Y a tu casa</p><p class="big m acc-text">${eur(r.casa)}</p><div class="split"><div><span>Tú</span><span>${eur(r.personal)}</span></div>${Object.values(r.K).map((x) => `<div><span>${x.label}</span><span>${eur(x.v)}</span></div>`).join('')}${r.otros ? `<div><span>${r.otros} adulto${r.otros > 1 ? 's' : ''} más (gasto público medio)</span><span>${eur(r.otrosV)}</span></div>` : ''}</div>`]);
   }
 
   const vt = r.vidaTotal;
-  SL.push(['ink', `<p class="eyebrow">Tus ${a.edad} años en lo público</p><p class="big m">${eur(vt)}</p><p>ha puesto lo público por ti desde que naciste.</p>${pctBars(r.vida, vt)}<p class="small">Gasto público medio por persona y año, más tus años de estudio en la pública.</p>`]);
+  SL.push(['ink', `${art('book', 'sm')}<p class="eyebrow">Tus ${a.edad} años en lo público</p><p class="big m">${eur(vt)}</p><p>ha puesto lo público por ti desde que naciste.</p>${pctBars(r.vida, vt)}<p class="small">Gasto público medio por persona y año, más tus años de estudio en la pública.</p>`]);
 
   const us = [];
   const fam = (a.adultos || 1) > 1 || a.hijos;
@@ -78,7 +79,7 @@ export function buildA(r, a) {
   if (a.infantil) us.push([`Guardería (${a.infantil}), cada año`, a.infantil * US.guarde]);
   if (a.bebe) us.push(['Un parto sin seguro (mediana)', US.parto]);
   const usT = us.reduce((s, x) => s + x[1], 0);
-  SL.push(['red', `<p class="eyebrow">Si vivieras en Estados Unidos</p><p class="big m">${usd(usT)}</p><div class="split">${us.map(([l, v]) => `<div><span>${l}</span><span>${usd(v)}</span></div>`).join('')}</div>${a.bebe ? '<p>Y de permiso pagado por nacimiento, por ley federal: cero semanas. Aquí son 19 por progenitor.</p>' : ''}<p class="small">Seguro: prima media de empresa (KFF 2025). Universidad: matrícula media en privadas (College Board 2025-26).</p>`]);
+  SL.push(['red', `${art('hospital', 'sm')}<p class="eyebrow">Si vivieras en Estados Unidos</p><p class="big m">${usd(usT)}</p><div class="split">${us.map(([l, v]) => `<div><span>${l}</span><span>${usd(v)}</span></div>`).join('')}</div>${a.bebe ? '<p>Y de permiso pagado por nacimiento, por ley federal: cero semanas. Aquí son 19 por progenitor.</p>' : ''}<p class="small">Seguro: prima media de empresa (KFF 2025). Universidad: matrícula media en privadas (College Board 2025-26).</p>`]);
 
   SL.push(['red', closing]);
   SL.push(['white', cardSlide]);
@@ -100,21 +101,21 @@ export function buildB(r) {
   const vt = r.vidaTotal;
   const cb = CLUB_B[r.club];
   const quien = r.sex === 'mujer' ? `Las mujeres de ${r.age} años` : r.sex === 'hombre' ? `Los hombres de ${r.age} años` : `La gente de ${r.age} años`;
-  SL.push(['red', `${ico('heart', 'hero')}<p class="year">${Y}</p><h2 class="disp l">${n}, esta es tu vida en lo público</h2><p>Lo hemos estimado con las medias de gente como tú.</p>`]);
-  SL.push(['ink', `${ico('hands', 'hero')}<p class="eyebrow">En tus ${r.age} años</p><p class="big m">${eur(vt)}</p><p>ha puesto lo público por ti desde que naciste.</p>`]);
-  SL.push(['pink', `<p class="eyebrow acc">Lo que más has usado</p>${pctBars(r.vida, vt)}<p class="small">Reparto de lo que lo público ha puesto por ti, de los 0 a los ${r.age} años.</p>`]);
+  SL.push(['red', `${art('heart')}<p class="year">${Y}</p><h2 class="disp l">${n}, esta es tu vida en lo público</h2><p>Lo hemos estimado con las medias de gente como tú.</p>`]);
+  SL.push(['ink', `${art('hands')}<p class="eyebrow">En tus ${r.age} años</p><p class="big m">${eur(vt)}</p><p>ha puesto lo público por ti desde que naciste.</p>`]);
+  SL.push(['pink', `${art('book', 'sm')}<p class="eyebrow acc">Lo que más has usado</p>${pctBars(r.vida, vt)}<p class="small">Reparto de lo que lo público ha puesto por ti, de los 0 a los ${r.age} años.</p>`]);
   const vs = Math.round((r.visitas / 5.1 - 1) * 100);
-  SL.push(['white', `${ico('hospital', 'hero')}<p class="eyebrow acc">Gente como tú</p><p class="big m acc-text">${dec(r.visitas)}</p><p>visitas al médico de familia al año. ${quien} van un ${Math.abs(vs)} % ${vs >= 0 ? 'más' : 'menos'} que la media española.</p><p class="small">Estimación orientativa por edad y sexo.</p>`]);
+  SL.push(['white', `${art('hospital')}<p class="eyebrow acc">Gente como tú</p><p class="big m acc-text">${dec(r.visitas)}</p><p>visitas al médico de familia al año. ${quien} van un ${Math.abs(vs)} % ${vs >= 0 ? 'más' : 'menos'} que la media española.</p><p class="small">Estimación orientativa por edad y sexo.</p>`]);
   const facts = [r.age <= 24 ? FACTS.Educación : FACTS.Sanidad, r.age <= 30 ? FACTS.Transporte : FACTS.Protección, FACTS.Cultura];
   SL.push(['pink', `<p class="eyebrow acc">Lo público ha mejorado</p>${factsBlock(facts)}`]);
-  SL.push(['ink', `${ico(cb[0], 'hero')}<p class="eyebrow">Tu club</p><h2 class="disp xl"><span class="acc">${r.club}</span></h2><p>${cb[1]}</p>`]);
-  if (r.serv) SL.push(['white', `${ico('heart', 'hero')}<p class="eyebrow acc">Tu servicio favorito</p><h2 class="disp l">«${esc(r.serv)}»</h2><p>No lo cambiarías por nada. Y está ahí porque lo sostenemos entre todos.</p>`]);
-  SL.push(['red', `<p class="year">${Y}</p><p class="eyebrow">Este año, lo público ha puesto por ti</p><p class="big m">${eur(r.year)}</p><div class="split"><div><span>Tenerte cubierto en sanidad</span><span>${eur(P.saludPC)}</span></div>${r.enCole ? `<div><span>Tu plaza en el instituto</span><span>${eur(P.alumno)}</span></div>` : ''}<div><span>Seguridad y emergencias</span><span>${eur(P.seguridad)}</span></div><div><span>Agua, alumbrado y residuos</span><span>${eur(P.ciudad)}</span></div><div><span>Cultura y deporte</span><span>${eur(P.ocio)}</span></div></div>`]);
+  SL.push(['ink', `${art(cb[0])}<p class="eyebrow">Tu club</p><h2 class="disp xl"><span class="acc">${r.club}</span></h2><p>${cb[1]}</p>`]);
+  if (r.serv) SL.push(['white', `${art('heart')}<p class="eyebrow acc">Tu servicio favorito</p><h2 class="disp l">«${esc(r.serv)}»</h2><p>No lo cambiarías por nada. Y está ahí porque lo sostenemos entre todos.</p>`]);
+  SL.push(['red', `${art('heart', 'sm')}<p class="year">${Y}</p><p class="eyebrow">Este año, lo público ha puesto por ti</p><p class="big m">${eur(r.year)}</p><div class="split"><div><span>Tenerte cubierto en sanidad</span><span>${eur(P.saludPC)}</span></div>${r.enCole ? `<div><span>Tu plaza en el instituto</span><span>${eur(P.alumno)}</span></div>` : ''}<div><span>Seguridad y emergencias</span><span>${eur(P.seguridad)}</span></div><div><span>Agua, alumbrado y residuos</span><span>${eur(P.ciudad)}</span></div><div><span>Cultura y deporte</span><span>${eur(P.ocio)}</span></div></div>`]);
   const us = [];
   if (r.age < 26) { us.push(['Una carrera en una universidad privada (4 años)', 4 * US.uniPriv]); us.push(['Tu seguro médico desde los 26, cada año', US.seguro]); }
   else { us.push([`Tu seguro médico de los 26 a los ${r.age}`, (r.age - 26 + 1) * US.seguro]); us.push(['Una carrera en una universidad privada (4 años)', 4 * US.uniPriv]); }
   const usT = us.reduce((s, x) => s + x[1], 0);
-  SL.push(['ink', `<p class="eyebrow">Si vivieras en Estados Unidos</p><p class="big m">${usd(usT)}</p><div class="split">${us.map(([l, v]) => `<div><span>${l}</span><span>${usd(v)}</span></div>`).join('')}</div><p class="small">Allí puedes estar en el seguro de tus padres hasta los 26. Después, 9.325 $ al año de media (KFF 2025). Matrícula privada media: 45.000 $ al año (College Board).</p>`]);
+  SL.push(['ink', `${art('hospital', 'sm')}<p class="eyebrow">Si vivieras en Estados Unidos</p><p class="big m">${usd(usT)}</p><div class="split">${us.map(([l, v]) => `<div><span>${l}</span><span>${usd(v)}</span></div>`).join('')}</div><p class="small">Allí puedes estar en el seguro de tus padres hasta los 26. Después, 9.325 $ al año de media (KFF 2025). Matrícula privada media: 45.000 $ al año (College Board).</p>`]);
   SL.push(['red', closing]);
   SL.push(['white', cardSlide]);
 

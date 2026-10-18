@@ -1,6 +1,6 @@
 // Tarjeta compartible 1080×1920 pintada en canvas (formato stories).
 import { SITE } from './data.js';
-import { svgDataUrl } from './icons.js';
+import { artDataUrl } from './art.js';
 
 const RED = '#E1001A';
 const DEEP = '#9E0013';
@@ -33,29 +33,35 @@ export async function drawCard(card) {
   const cv = document.createElement('canvas');
   cv.width = W; cv.height = H;
   const ctx = cv.getContext('2d');
-  ctx.fillStyle = RED; ctx.fillRect(0, 0, W, H);
-  ctx.fillStyle = WHITE; ctx.textBaseline = 'alphabetic';
+  ctx.textBaseline = 'alphabetic';
 
-  // Pictogramas superiores
-  const imgs = await Promise.all(card.icons.map((k) => loadImg(svgDataUrl(k)).catch(() => null)));
-  imgs.forEach((im, i) => { if (im) ctx.drawImage(im, M + i * 130, 90, 96, 96); });
+  // Fondo con luz y círculos
+  const g = ctx.createRadialGradient(W * 0.85, 120, 40, W * 0.85, 120, 1100);
+  g.addColorStop(0, '#FF3B4F'); g.addColorStop(1, RED);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = DEEP; ctx.beginPath(); ctx.arc(-120, 1500, 420, 0, 7); ctx.fill();
+  ctx.fillStyle = WHITE;
+
+  // Ilustraciones: una grande arriba a la derecha y tiras pequeñas
+  const imgs = await Promise.all(card.icons.map((k, i) => loadImg(artDataUrl(k, i === 0 ? DEEP : '#FFE1E4')).catch(() => null)));
+  if (imgs[0]) ctx.drawImage(imgs[0], 720, 24, 320, 320);
 
   // Año gigante
   const ys = fitText(ctx, String(SITE.year), W - 2 * M, 470, 900, DISPLAY, 'extra-condensed');
   ctx.font = `900 extra-condensed ${ys}px ${DISPLAY}`;
-  ctx.fillText(String(SITE.year), M - 14, 620);
+  ctx.fillText(String(SITE.year), M - 14, 660);
 
   // Eyebrow
   ctx.letterSpacing = '5px';
   const es = fitText(ctx, card.eyebrow.toUpperCase(), W - 2 * M, 40, 700, DISPLAY);
   ctx.font = `700 ${es}px ${DISPLAY}`;
-  ctx.fillText(card.eyebrow.toUpperCase(), M, 730);
+  ctx.fillText(card.eyebrow.toUpperCase(), M, 770);
   ctx.letterSpacing = '0px';
 
   // Total
   const ts = fitText(ctx, card.total, W - 2 * M, 250, 900, DISPLAY, 'extra-condensed');
   ctx.font = `900 extra-condensed ${ts}px ${DISPLAY}`;
-  ctx.fillText(card.total, M - 6, 730 + ts * 0.92);
+  ctx.fillText(card.total, M - 6, 770 + ts * 0.92);
 
   // Líneas
   let y = 1130;

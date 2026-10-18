@@ -5,7 +5,7 @@ import '@fontsource/source-sans-3/700.css';
 import './style.css';
 
 import { SITE, SOURCES } from './data.js';
-import { ico, svg, ROW } from './icons.js';
+import { artSvg, art, TILES } from './art.js';
 import { Q } from './questions.js';
 import { computeA, computeB } from './compute.js';
 import { buildA, buildB, eur } from './slides.js';
@@ -22,7 +22,7 @@ function show(id) {
 }
 
 // ---------- Portada ----------
-$('homeIcons').innerHTML = ROW.map((k) => ico(k)).join('');
+$('homeIcons').innerHTML = `<div class="track">${[...TILES, ...TILES].map((k) => art(k, 'tile')).join('')}</div>`;
 $('homeYear').textContent = SITE.year;
 (() => {
   const s = { ciudad: 'bilbao', edad: 34, sit: 'trabajo', estudios: ['cole', 'uni'], vivienda: 'alquiler', bono: 1, adultos: 2, hijos: 1, nhijos: 1, bebe: 0, infantil: 0, cole: 1, extra: 1, pediatra: 4, medico: 4, esp: 2, psico: 3, gordo: 'urg', emerg: '', transp: 'diario', deporte: ['gym'], cultura: ['museo', 'fiestas'], culturaN: 7, worker: 'profe' };
@@ -48,7 +48,7 @@ function renderQ() {
   $('qcount').textContent = `${done + 1} / ${total}`;
   $('qprog').style.width = `${(done / total) * 100}%`;
   $('qscope').textContent = q.s;
-  $('qico').innerHTML = svg(q.i);
+  $('qico').innerHTML = artSvg(q.i, '#FFE1E4');
   $('qtext').textContent = q.t;
   $('qsub').textContent = q.sub || ''; $('qsub').hidden = !q.sub;
   const opts = typeof q.o === 'function' ? q.o(A) : q.o;
