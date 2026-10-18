@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tu año en lo público</title>
+  <meta name="description" content="Descubre cuánto te ha ahorrado lo público este año y desde que naciste: sanidad, educación, transporte, vivienda, cultura y deporte. Lo público es lo tuyo.">
+  <meta name="theme-color" content="#E1001A">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:title" content="Tu año en lo público">
+  <meta property="og:description" content="¿Cuánto te habría costado tu año sin lo público? Descúbrelo en dos minutos.">
+  <meta property="og:image" content="https://davidromerosan.github.io/lo-publico-es-lo-tuyo/og.png">
+  <meta property="og:url" content="https://davidromerosan.github.io/lo-publico-es-lo-tuyo/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Tu año en lo público">
+  <meta name="twitter:description" content="¿Cuánto te habría costado tu año sin lo público? Descúbrelo en dos minutos.">
+  <meta name="twitter:image" content="https://davidromerosan.github.io/lo-publico-es-lo-tuyo/og.png">
+</head>
+<body>
+  <main class="stage">
+
+    <section class="screen" id="home">
+      <div class="icorow" id="homeIcons"></div>
+      <p class="year" id="homeYear">2026</p>
+      <h1 class="disp">Tu año en lo público</h1>
+      <p class="lead">¿Cuánto te habría costado tu año sin sanidad, educación, transporte, cultura o deporte públicos? Te lo contamos en dos minutos.</p>
+      <div class="sample" aria-label="Ejemplo de resultado">
+        <span class="eyebrow">Ejemplo · Lucía, 34 años, Bilbao, un hijo en el cole</span>
+        <b id="sampleTotal">—</b>
+        <span>ha recibido de lo público desde que nació</span>
+      </div>
+      <div class="homeactions">
+        <button class="btn light" id="startA" type="button">Descubre tu año</button>
+        <button class="link" id="startB" type="button">¿Con prisa? Hazlo con solo 3 datos</button>
+      </div>
+      <footer class="foot">
+        <p>No guardamos tus respuestas. Todo se calcula en tu móvil.</p>
+        <p><button class="link" type="button" data-sources>De dónde salen las cifras</button> · <a href="./privacidad.html">Privacidad</a></p>
+        <p id="emisor" hidden></p>
+      </footer>
+    </section>
+
+    <section class="screen" id="quiz" hidden>
+      <div class="qtop">
+        <button class="link" id="qback" type="button">Atrás</button>
+        <span class="eyebrow" id="qcount"></span>
+      </div>
+      <div class="qbar" aria-hidden="true"><i id="qprog"></i></div>
+      <div class="qhead"><p class="eyebrow scope" id="qscope"></p><span class="ico" id="qico" aria-hidden="true"></span></div>
+      <h2 class="disp" id="qtext"></h2>
+      <p id="qsub"></p>
+      <div class="opts" id="qopts"></div>
+    </section>
+
+    <form class="screen" id="form" hidden novalidate>
+      <div class="qtop"><button class="link" id="fback" type="button">Atrás</button><span class="eyebrow scope">Versión rápida</span></div>
+      <h2 class="disp">Tres datos y te lo contamos</h2>
+      <div class="field"><label for="fname">Tu nombre</label><input id="fname" type="text" autocomplete="given-name" maxlength="24" placeholder="Laura"></div>
+      <div class="field"><span class="flabel" id="fsexl">Sexo</span><div class="seg" role="group" aria-labelledby="fsexl">
+        <button class="opt" type="button" data-v="mujer" aria-pressed="false">Mujer</button><button class="opt" type="button" data-v="hombre" aria-pressed="false">Hombre</button><button class="opt" type="button" data-v="nd" aria-pressed="false">Prefiero no decirlo</button></div></div>
+      <div class="field"><label for="fage">Edad</label><input id="fage" type="number" inputmode="numeric" min="14" max="99" placeholder="27"></div>
+      <div class="field"><label for="fserv">¿Qué servicio público no cambiarías por nada? <span class="opt-l">(opcional)</span></label><input id="fserv" type="text" maxlength="60" placeholder="El polideportivo de mi barrio"></div>
+      <p class="err" id="ferr" role="alert" hidden></p>
+      <button class="btn" id="fgo" type="submit">Ver mi vida en lo público</button>
+      <p class="priv">No guardamos nada. Todo se calcula en tu móvil.</p>
+    </form>
+
+    <section class="screen" id="story" hidden>
+      <div class="bars" id="bars" aria-hidden="true"></div>
+      <div id="slideHost"></div>
+      <div class="tap" id="tap"><button aria-label="Anterior" id="tapPrev" type="button"></button><button aria-label="Siguiente" id="tapNext" type="button"></button></div>
+      <div class="nav"><button id="prev" type="button">Atrás</button><button id="next" type="button">Siguiente</button></div>
+    </section>
+
+    <section class="screen" id="fuentes" hidden>
+      <div class="qtop"><button class="link" id="srcBack" type="button">Volver</button><span class="eyebrow scope">Fuentes</span></div>
+      <h2 class="disp">De dónde salen las cifras</h2>
+      <p>Usamos precios privados reales de cada ciudad y el gasto público medio por persona publicado por el Estado. En Bilbao, Vitoria y otras ciudades, salvo el alquiler, aplicamos un ajuste sobre los precios de Madrid. La vivienda protegida se calcula con un alquiler un 40 % por debajo del mercado en 70 m².</p>
+      <ol class="srclist" id="srcList"></ol>
+    </section>
+
+    <div class="toast" id="toast" role="status" hidden></div>
+  </main>
+  <noscript><p style="padding:24px;font-family:sans-serif">Esta web necesita JavaScript para calcular tu resumen.</p></noscript>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
