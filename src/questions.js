@@ -4,7 +4,7 @@ const upTo = (n) => [['Ninguno', 0], ['Uno', 1], ['Dos', 2], ['Tres', 3]].slice(
 
 export const Q = [
   { k: 'ciudad', s: 'Sobre ti', i: 'city', t: '¿Dónde vives?', o: [['Madrid', 'madrid'], ['Barcelona', 'barcelona'], ['Bilbao', 'bilbao'], ['Vitoria-Gasteiz', 'vitoria'], ['En otra ciudad o pueblo', 'otra']] },
-  { k: 'edad', s: 'Sobre ti', i: 'heart', t: '¿Cuántos años tienes?', o: [['16 o 17', 17], ['18 a 24', 21], ['25 a 30', 28], ['31 a 38', 34], ['39 a 45', 42], ['46 a 64', 55], ['65 o más', 70]] },
+  { k: 'edad', s: 'Sobre ti', i: 'heart', t: '¿Cuántos años tienes?', o: [['16 o 17', 17], ['18 a 23', 20], ['24 a 30', 27], ['31 a 38', 34], ['39 a 45', 42], ['46 a 64', 55], ['65 o más', 70]] },
   { k: 'sit', s: 'Sobre ti', i: 'hands', t: '¿Qué haces ahora mismo?', o: (a) => [['Estudio', 'estudio'], ['Trabajo', 'trabajo'], ['Estudio y trabajo', 'ambos'], ['Busco trabajo', 'paro'], ['Cuido de mi casa o familia', 'casa']].concat(a.edad >= 55 ? [['Estoy jubilado o jubilada', 'jubilado']] : []) },
   { k: 'estudia', s: 'Tus estudios', i: 'cap', when: isStudent, t: '¿Dónde estudias?', o: [['Instituto público (ESO o Bachillerato)', 'inst'], ['FP pública', 'fp'], ['Universidad pública', 'uni'], ['En un centro privado o concertado', 'otra']] },
   { k: 'paro', s: 'Tu trabajo', i: 'hands', when: (a) => a.sit === 'paro', t: '¿Cuántos meses has cobrado paro o subsidio este año?', o: [['Ninguno', 0], ['1 a 3', 2], ['4 a 6', 5], ['7 a 12', 10]] },
@@ -13,7 +13,7 @@ export const Q = [
   { k: 'vivienda', s: 'Tu casa', i: 'house', t: '¿Cómo vives?', o: [['Con mi familia', 'familia'], ['De alquiler', 'alquiler'], ['En un piso compartido', 'compartido'], ['En una vivienda pública o protegida', 'publica'], ['En una casa en propiedad', 'propiedad']] },
   { k: 'bono', s: 'Tu casa', i: 'house', when: (a) => (a.vivienda === 'alquiler' || a.vivienda === 'compartido') && a.edad <= 34, t: '¿Te ha llegado el Bono Alquiler Joven?', sub: 'Hasta 250 € al mes para menores de 36 años.', two: true, o: [['Sí', 1], ['No', 0]] },
   { k: 'adultos', s: 'Tu casa', i: 'house', t: '¿Cuántos adultos vivís en casa?', sub: 'Contándote a ti.', o: [['Solo yo', 1], ['Dos', 2], ['Tres', 3], ['Cuatro o más', 4]] },
-  { k: 'hijos', s: 'Tu familia', i: 'baby', when: (a) => a.edad >= 21, t: '¿Tienes hijos que vivan contigo?', two: true, o: [['Sí', 1], ['No', 0]] },
+  { k: 'hijos', s: 'Tu familia', i: 'baby', when: (a) => a.edad >= 24, t: '¿Tienes hijos que vivan contigo?', two: true, o: [['Sí', 1], ['No', 0]] },
   { k: 'nhijos', s: 'Tus hijos', i: 'baby', when: (a) => a.hijos === 1, t: '¿Cuántos?', o: [['Uno', 1], ['Dos', 2], ['Tres o más', 3]] },
   { k: 'bebe', s: 'Tus hijos', i: 'baby', when: (a) => a.hijos === 1, t: '¿Ha nacido alguno este año?', two: true, o: [['Sí', 1], ['No', 0]] },
   { k: 'infantil', s: 'Tus hijos', i: 'baby', when: (a) => a.hijos === 1, t: '¿Cuántos van a una escuela infantil pública?', sub: 'De 0 a 3 años.', o: (a) => upTo(a.nhijos) },

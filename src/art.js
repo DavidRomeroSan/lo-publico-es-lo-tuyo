@@ -3,7 +3,8 @@
 const T = '#17100F'; const W = '#FFFFFF'; const R = '#FFE1E4'; const RD = '#E1001A'; const Y = '#FFC83D';
 
 const heart = (x, y, s, f) => `<path transform="translate(${x} ${y}) scale(${s})" fill="${f}" d="M0 10C-14-2-18-14-9-19-4-21 0-17 0-14 0-17 4-21 9-19 18-14 14-2 0 10Z"/>`;
-const spark = (x, y, s = 1) => `<path transform="translate(${x} ${y}) scale(${s})" fill="${W}" d="M0-9 2.5-2.5 9 0 2.5 2.5 0 9-2.5 2.5-9 0-2.5-2.5Z"/>`;
+const spark = () => '';
+const _spark = (x, y, s = 1) => `<path transform="translate(${x} ${y}) scale(${s})" fill="${W}" d="M0-9 2.5-2.5 9 0 2.5 2.5 0 9-2.5 2.5-9 0-2.5-2.5Z"/>`;
 const ground = (c = T) => `<rect x="24" y="192" width="192" height="9" rx="4.5" fill="${c}"/>`;
 
 function windows(x, y, cols, rows, w, h, gx, gy, f) {
@@ -20,7 +21,7 @@ const SCENES = {
     <rect x="104" y="146" width="32" height="46" rx="4" fill="${T}"/>
     <circle cx="120" cy="60" r="34" fill="${W}"/>
     <rect x="109" y="40" width="22" height="40" rx="4" fill="${RD}"/><rect x="100" y="49" width="40" height="22" rx="4" fill="${RD}"/>
-    ${heart(190, 52, 1.4, Y)}${spark(46, 56)}${ground()}`,
+    ${ground()}`,
   school: () => `
     <rect x="40" y="104" width="160" height="88" fill="${W}"/>
     <path d="M28 106 120 48l92 58Z" fill="${T}"/>
@@ -98,7 +99,7 @@ const SCENES = {
   heart: () => `
     <path d="M120 200C58 160 32 122 32 84c0-27 20-44 46-44 18 0 33 10 42 25 9-15 24-25 42-25 26 0 46 17 46 44 0 38-26 76-88 116Z" fill="${W}"/>
     <path d="M62 78c0-12 8-20 20-20" stroke="${R}" stroke-width="9" fill="none" stroke-linecap="round"/>
-    ${heart(196, 44, 1.2, Y)}${heart(44, 170, .9, Y)}${spark(210, 150)}`,
+`,
   hands: () => `
     ${heart(120, 84, 3.4, W)}
     <path d="M26 150q34-22 66 0l28 14 28-14q32-22 66 0l-10 40q-84 36-168 0Z" fill="${Y}"/>
@@ -108,13 +109,15 @@ const SCENES = {
 const ALIAS = { baby: 'school', cap: 'book', ball: 'swim', train: 'bus', shield: 'hands' };
 
 // Devuelve el SVG; blob = color del círculo de fondo (por defecto, el de la lámina).
-export function artSvg(k, blob = 'var(--blob, #9E0013)') {
+export const DEFS = `<defs><linearGradient id="artg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".24"/><stop offset="1" stop-color="#000" stop-opacity=".1"/></linearGradient><filter id="arts" x="-10%" y="-10%" width="130%" height="130%"><feDropShadow dx="5" dy="6" stdDeviation="0" flood-color="#000" flood-opacity=".26"/></filter></defs>`;
+
+export function artSvg(k, blob = 'var(--blob, #9E0013)', standalone = false) {
   const scene = (SCENES[k] || SCENES[ALIAS[k]] || SCENES.heart)();
-  return `<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" style="--blobc:${blob}"><circle cx="120" cy="122" r="108" style="fill:${blob}"/>${scene}</svg>`;
+  return `<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" style="--blobc:${blob}">${standalone ? DEFS : ''}<rect x="6" y="6" width="228" height="228" rx="68" style="fill:${blob}"/><rect x="6" y="6" width="228" height="228" rx="68" fill="url(#artg)"/><circle cx="178" cy="62" r="78" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="3"/><circle cx="40" cy="206" r="34" fill="#fff" fill-opacity=".1"/><g filter="url(#arts)">${scene}</g></svg>`;
 }
 export const art = (k, cls = '') => `<span class="art ${cls}" aria-hidden="true">${artSvg(k)}</span>`;
 
 export function artDataUrl(k, blob = '#9E0013') {
-  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(artSvg(k, blob).replace(' xmlns', ' width="480" height="480" xmlns'));
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(artSvg(k, blob, true).replace(' xmlns', ' width="480" height="480" xmlns'));
 }
 export const TILES = ['hospital', 'school', 'bus', 'fire', 'house', 'swim', 'book', 'tree', 'lamp', 'music', 'city', 'hands'];

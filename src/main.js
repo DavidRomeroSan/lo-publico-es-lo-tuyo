@@ -5,12 +5,13 @@ import '@fontsource/source-sans-3/700.css';
 import './style.css';
 
 import { SITE, SOURCES } from './data.js';
-import { artSvg, art, TILES } from './art.js';
+import { artSvg, art, TILES, DEFS } from './art.js';
 import { Q } from './questions.js';
 import { computeA, computeB } from './compute.js';
 import { buildA, buildB, eur } from './slides.js';
 import { drawCard, shareBlob, downloadBlob } from './share.js';
 
+document.body.insertAdjacentHTML('afterbegin', `<svg width="0" height="0" style="position:absolute" aria-hidden="true">${DEFS}</svg>`);
 const $ = (id) => document.getElementById(id);
 const SCREENS = ['home', 'quiz', 'form', 'story', 'fuentes'];
 let backFromSources = 'home';
@@ -114,9 +115,9 @@ function renderSlide() {
   story.style.background = BG[cls];
   $('bars').innerHTML = slides.map((_, i) => `<span class="${i <= si ? 'done' : ''}"></span>`).join('');
   const last = si === slides.length - 1;
-  $('next').hidden = last; $('tap').hidden = last;
+  $('tap').hidden = last;
+  $('next').textContent = last ? 'Volver a empezar' : 'Siguiente';
   $('prev').textContent = si === 0 ? 'Cambiar respuestas' : 'Atrás';
-  document.querySelectorAll('.again').forEach((b) => b.addEventListener('click', () => show('home')));
   if (last) prepareCard();
 }
 async function prepareCard() {
@@ -138,7 +139,7 @@ function go(d) {
   if (d < 0 && si === 0) { if (mode === 'B') { show('form'); return; } qi = hist.length ? hist.pop() : 0; show('quiz'); renderQ(); return; }
   si = Math.min(slides.length - 1, Math.max(0, si + d)); renderSlide();
 }
-$('next').addEventListener('click', () => go(1));
+$('next').addEventListener('click', () => { if (si === slides.length - 1) show('home'); else go(1); });
 $('prev').addEventListener('click', () => go(-1));
 $('tapNext').addEventListener('click', () => go(1));
 $('tapPrev').addEventListener('click', () => go(-1));

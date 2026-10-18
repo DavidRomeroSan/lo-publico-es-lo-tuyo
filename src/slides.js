@@ -22,8 +22,7 @@ const factsBlock = (F) => `<div class="facts">${F.map(([i, b, t]) => `<div>${ico
 const closing = `<div class="mosaic">${['hospital', 'school', 'bus', 'house', 'tree', 'fire'].map((k) => art(k, 'tile')).join('')}</div><h2 class="disp l">Antes de conocer el mundo, ya había algo cuidando de ti.</h2><p class="eyebrow">${SITE.lema}</p>`;
 
 const cardSlide = `<div id="cardBox" class="cardbox"><p class="small">Preparando tu tarjeta…</p></div>
-  <div class="cardactions"><button class="btn" id="shareBtn" type="button">Compartir</button><button class="btn ghost" id="dlBtn" type="button">Descargar imagen</button></div>
-  <button class="link again" type="button">Volver a empezar</button>`;
+  <div class="cardactions"><button class="btn" id="shareBtn" type="button">Compartir</button><button class="btn ghost" id="dlBtn" type="button">Descargar imagen</button></div>`;
 
 export function buildA(r, a) {
   const SL = [];
