@@ -21,8 +21,9 @@ const factsBlock = (F) => `<div class="facts">${F.map(([i, b, t]) => `<div>${ico
 
 const closing = `<div class="mosaic">${['hospital', 'school', 'bus', 'house', 'tree', 'fire'].map((k) => art(k, 'tile')).join('')}</div><h2 class="disp l">Antes de conocer el mundo, ya había algo cuidando de ti.</h2><p class="eyebrow">${SITE.lema}</p>`;
 
-const cardSlide = `<div id="cardBox" class="cardbox"><p class="small">Preparando tu tarjeta…</p></div>
-  <div class="cardactions"><button class="btn" id="shareBtn" type="button">Compartir</button><button class="btn ghost" id="dlBtn" type="button">Descargar imagen</button></div>`;
+const cardSlide = `<p class="eyebrow acc">Compártelo</p><div class="cardtabs" id="cardTabs"></div><div id="cardBox" class="cardbox"><p class="small">Preparando tus tarjetas…</p></div>
+  <div class="cardactions"><button class="btn" id="shareBtn" type="button">Compartir esta</button><button class="btn ghost" id="dlBtn" type="button">Descargar</button><button class="btn ghost" id="shareAllBtn" type="button">Compartir las 3</button></div>`;
+const pctLines = (vida, vt) => vida.filter((x) => x[1] > 0).sort((x, y) => y[1] - x[1]).slice(0, 5).map(([l, v]) => [l, Math.round((v / vt) * 100) + ' %']);
 
 export function buildA(r, a) {
   const SL = [];
@@ -91,15 +92,13 @@ export function buildA(r, a) {
   SL.push(['red', closing]);
   SL.push(['white', cardSlide]);
 
-  const card = {
-    eyebrow: 'Lo público me ha salvado de pagar',
-    total: eur(r.personal),
-    lines: [...r.ranked.slice(0, 3).map(([, x]) => [x.label, eur(x.v)]), [`Mis ${a.edad} años en lo público`, eur(vt)], ['En EE. UU. me costaría', usd(usT)]],
-    club: cl[0],
-    icons: [GRP_ICO[r.club] || 'heart', 'hospital', 'school', 'bus', 'house'],
-    foot: `Precios privados de ${city} y gasto público medio`
-  };
-  return { slides: SL, card };
+  const foot = `Precios privados de ${city} y gasto público medio`;
+  const cards = [
+    { id: 'mi-ano', label: 'Mi año', eyebrow: 'Lo público me ha salvado de pagar', total: eur(r.personal), lines: r.ranked.slice(0, 4).map(([, x]) => [x.label, eur(x.v)]), tag: cl[0], icons: [GRP_ICO[r.club] || 'heart'], foot },
+    { id: 'mi-vida', label: 'Mi vida', eyebrow: `Mis ${a.edad} años en lo público`, total: eur(vt), lines: pctLines(r.vida, vt), tag: 'Desde que nací', icons: ['book'], foot: 'Gasto público medio por persona y año' },
+    { id: 'eeuu', label: 'EE. UU.', eyebrow: 'Si viviera en Estados Unidos', total: usd(usT), lines: us.slice(0, 4).map(([l, v]) => [l, usd(v)]), tag: 'Aquí no lo pago', icons: ['hospital'], foot: 'KFF 2025 y College Board 2025-26' }
+  ];
+  return { slides: SL, cards };
 }
 
 export function buildB(r) {
@@ -126,13 +125,11 @@ export function buildB(r) {
   SL.push(['red', closing]);
   SL.push(['white', cardSlide]);
 
-  const card = {
-    eyebrow: `${r.name.slice(0, 20)} · mi vida en lo público`,
-    total: eur(vt),
-    lines: [...r.vida.filter((x) => x[1] > 0).sort((x, y) => y[1] - x[1]).slice(0, 3).map(([l, v]) => [l, Math.round((v / vt) * 100) + ' %']), ['En EE. UU. pagaría', usd(usT)], ...(r.serv ? [['No lo cambio', r.serv.slice(0, 26)]] : [])],
-    club: r.club,
-    icons: [cb[0], 'hospital', 'school', 'bus', 'house'],
-    foot: 'Estimación con gasto público medio'
-  };
-  return { slides: SL, card };
+  const split = [['Sanidad', P.saludPC], ['Seguridad y emergencias', P.seguridad], ['Agua, alumbrado y residuos', P.ciudad], ['Cultura y deporte', P.ocio]];
+  const cards = [
+    { id: 'mi-ano', label: 'Mi año', eyebrow: `${r.name.slice(0, 20)} · este año`, total: eur(r.year), lines: split.map(([l, v]) => [l, eur(v)]), tag: r.club, icons: [cb[0]], foot: 'Estimación con gasto público medio' },
+    { id: 'mi-vida', label: 'Mi vida', eyebrow: `${r.name.slice(0, 20)} · mi vida en lo público`, total: eur(vt), lines: [...pctLines(r.vida, vt), ...(r.serv ? [['No lo cambio', r.serv.slice(0, 26)]] : [])].slice(0, 5), tag: 'Desde que nací', icons: ['book'], foot: 'Estimación con gasto público medio' },
+    { id: 'eeuu', label: 'EE. UU.', eyebrow: 'Si viviera en Estados Unidos', total: usd(usT), lines: us.map(([l, v]) => [l, usd(v)]), tag: 'Aquí no lo pago', icons: ['hospital'], foot: 'KFF 2025 y College Board' }
+  ];
+  return { slides: SL, cards };
 }

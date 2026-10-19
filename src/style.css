@@ -242,3 +242,10 @@ a { color: inherit; }
 .openrow input { font: 600 18px var(--f-body); padding: 13px 14px; border: 2px solid var(--tinta); border-radius: 12px; min-width: 0; color: var(--tinta); background: var(--papel); }
 .openrow input:focus-visible { outline: 3px solid var(--rojo); outline-offset: 1px; }
 .openrow .btn { padding: 0 20px; font-size: 16px; }
+
+/* Selector de tarjetas */
+.cardtabs { display: flex; gap: 8px; flex: none; }
+.cardtabs .tab { appearance: none; border: 2px solid var(--tinta); background: var(--papel); color: var(--tinta); border-radius: 999px; font: 700 14px var(--f-body); padding: 8px 14px; cursor: pointer; }
+.cardtabs .tab[aria-pressed="true"] { background: var(--rojo); border-color: var(--rojo); color: var(--papel); }
+.cardbox img { max-width: 240px; }
+.cardactions .btn { padding: 14px 18px; font-size: 16px; }

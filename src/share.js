@@ -80,7 +80,7 @@ export async function drawCard(card) {
   });
 
   // Club
-  const clubTxt = card.club.toUpperCase();
+  const clubTxt = (card.tag || card.club).toUpperCase();
   const cs = fitText(ctx, clubTxt, W - 2 * M, 130, 900, DISPLAY, 'extra-condensed');
   ctx.fillStyle = DEEP; ctx.fillRect(M - 12, 1640 - cs * 0.86, ctx.measureText(clubTxt).width + 24, cs * 1.0);
   ctx.fillStyle = WHITE; ctx.font = `900 extra-condensed ${cs}px ${DISPLAY}`;
@@ -99,20 +99,20 @@ export async function drawCard(card) {
   return new Promise((res) => cv.toBlob((b) => res(b), 'image/png'));
 }
 
-export async function shareBlob(blob) {
-  const file = new File([blob], `mi-ano-en-lo-publico-${SITE.year}.png`, { type: 'image/png' });
-  const data = { files: [file], title: SITE.name, text: `Mi año en lo público. Haz el tuyo: https://${SITE.url}` };
-  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+export async function shareBlobs(blobs, names) {
+  const files = blobs.map((b, i) => new File([b], `${names[i]}.png`, { type: 'image/png' }));
+  const data = { files, title: SITE.name, text: `Mi año en lo público. Haz el tuyo: https://${SITE.url}` };
+  if (navigator.canShare && navigator.canShare({ files })) {
     try { await navigator.share(data); return 'shared'; } catch (e) { if (e && e.name === 'AbortError') return 'cancel'; }
   }
-  downloadBlob(blob);
+  blobs.forEach((b, i) => setTimeout(() => downloadBlob(b, names[i]), i * 400));
   return 'downloaded';
 }
 
-export function downloadBlob(blob) {
+export function downloadBlob(blob, name = `mi-ano-en-lo-publico-${SITE.year}`) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = `mi-ano-en-lo-publico-${SITE.year}.png`;
+  a.href = url; a.download = `${name}.png`;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 4000);
 }

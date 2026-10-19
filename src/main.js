@@ -6,10 +6,10 @@ import './style.css';
 
 import { SITE, SOURCES } from './data.js';
 import { artSvg, art, TILES, DEFS } from './art.js';
-import { Q } from './questions.js';
+import { Q, deriveA } from './questions.js';
 import { computeA, computeB } from './compute.js';
 import { buildA, buildB, eur } from './slides.js';
-import { drawCard, shareBlob, downloadBlob } from './share.js';
+import { drawCard, shareBlobs, downloadBlob } from './share.js';
 
 document.body.insertAdjacentHTML('afterbegin', `<svg width="0" height="0" style="position:absolute" aria-hidden="true">${DEFS}</svg>`);
 const $ = (id) => document.getElementById(id);
@@ -92,7 +92,8 @@ function advance() { hist.push(qi); const n = nextIndex(qi); if (n < 0) { finish
 $('qback').addEventListener('click', () => { if (hist.length) { qi = hist.pop(); renderQ(); } else show('home'); });
 function finishA() {
   Q.forEach((q) => { if (!applies(q, A)) delete A[q.k]; });
-  startStory(buildA(computeA(A), A));
+  const D = deriveA(A);
+  startStory(buildA(computeA(D), D));
 }
 
 // ---------- Versión B ----------
@@ -113,8 +114,8 @@ $('form').addEventListener('submit', (e) => {
 });
 
 // ---------- Stories ----------
-let slides = []; let si = 0; let card = null; let cardBlob = null;
-function startStory(res) { slides = res.slides; card = res.card; cardBlob = null; si = 0; show('story'); renderSlide(); }
+let slides = []; let si = 0; let cards = []; let cardBlobs = []; let cardUrls = []; let ci = 0;
+function startStory(res) { slides = res.slides; cards = res.cards; cardBlobs = []; cardUrls = []; ci = 0; si = 0; show('story'); renderSlide(); }
 
 const BG = { red: 'var(--rojo)', ink: 'var(--tinta)', pink: 'var(--rosa)', white: 'var(--papel)' };
 function renderSlide() {
@@ -132,16 +133,25 @@ function renderSlide() {
 }
 async function prepareCard() {
   const box = $('cardBox');
+  $('cardTabs').innerHTML = cards.map((c, i) => `<button type="button" class="tab" data-i="${i}" aria-pressed="${i === ci}">${c.label}</button>`).join('');
+  $('cardTabs').querySelectorAll('.tab').forEach((t) => t.addEventListener('click', () => { ci = +t.dataset.i; showCard(); }));
   try {
-    if (!cardBlob) cardBlob = await drawCard(card);
-    const url = URL.createObjectURL(cardBlob);
-    box.innerHTML = `<img src="${url}" alt="Tu tarjeta de ${SITE.year}: ${card.eyebrow} ${card.total}. ${card.club}." width="1080" height="1920">`;
+    if (!cardBlobs.length) cardBlobs = await Promise.all(cards.map((c) => drawCard(c)));
+    cardUrls = cardBlobs.map((b) => URL.createObjectURL(b));
+    showCard();
   } catch (e) {
     box.innerHTML = '<p class="small">No hemos podido generar la imagen en este navegador. Haz una captura de pantalla.</p>';
   }
-  const sh = $('shareBtn'); const dl = $('dlBtn');
-  if (sh) sh.onclick = async () => { if (cardBlob) { const r = await shareBlob(cardBlob); if (r === 'downloaded') toast('Imagen descargada. Súbela a tus stories.'); } };
-  if (dl) dl.onclick = () => { if (cardBlob) { downloadBlob(cardBlob); toast('Imagen descargada.'); } };
+  const sh = $('shareBtn'); const dl = $('dlBtn'); const all = $('shareAllBtn');
+  const names = () => cards.map((c) => `${c.id}-${SITE.year}`);
+  if (sh) sh.onclick = async () => { if (cardBlobs.length) { const r = await shareBlobs([cardBlobs[ci]], [names()[ci]]); if (r === 'downloaded') toast('Imagen descargada. Súbela a tus stories.'); } };
+  if (all) all.onclick = async () => { if (cardBlobs.length) { const r = await shareBlobs(cardBlobs, names()); if (r === 'downloaded') toast('Imágenes descargadas. Súbelas a tus stories.'); } };
+  if (dl) dl.onclick = () => { if (cardBlobs.length) { downloadBlob(cardBlobs[ci], names()[ci]); toast('Imagen descargada.'); } };
+}
+function showCard() {
+  const c = cards[ci];
+  $('cardBox').innerHTML = `<img src="${cardUrls[ci]}" alt="Tu tarjeta de ${SITE.year}: ${c.eyebrow} ${c.total}." width="1080" height="1920">`;
+  document.querySelectorAll('#cardTabs .tab').forEach((t) => t.setAttribute('aria-pressed', +t.dataset.i === ci));
 }
 function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => { t.hidden = true; }, 3000); }
 

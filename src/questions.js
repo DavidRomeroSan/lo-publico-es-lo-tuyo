@@ -13,22 +13,14 @@ export const Q = [
   { k: 'vivienda', s: 'Tu casa', i: 'house', t: '¿Cómo vives?', o: [['Con mi familia', 'familia'], ['De alquiler', 'alquiler'], ['En un piso compartido', 'compartido'], ['En una vivienda pública o protegida', 'publica'], ['En una casa en propiedad', 'propiedad']] },
   { k: 'bono', s: 'Tu casa', i: 'house', when: (a) => (a.vivienda === 'alquiler' || a.vivienda === 'compartido') && a.edad <= 34, t: '¿Te ha llegado el Bono Alquiler Joven?', sub: 'Hasta 250 € al mes para menores de 36 años.', two: true, o: [['Sí', 1], ['No', 0]] },
   { k: 'adultos', s: 'Tu casa', i: 'house', t: '¿Cuántos adultos vivís en casa?', sub: 'Contándote a ti.', o: [['Solo yo', 1], ['Dos', 2], ['Tres', 3], ['Cuatro o más', 4]] },
-  { k: 'hijos', s: 'Tu familia', i: 'baby', when: (a) => a.edad >= 24, t: '¿Tienes hijos que vivan contigo?', two: true, o: [['Sí', 1], ['No', 0]] },
-  { k: 'nhijos', s: 'Tus hijos', i: 'baby', when: (a) => a.hijos === 1, t: '¿Cuántos?', o: [['Uno', 1], ['Dos', 2], ['Tres o más', 3]] },
-  { k: 'bebe', s: 'Tus hijos', i: 'baby', when: (a) => a.hijos === 1, t: '¿Ha nacido alguno este año?', two: true, o: [['Sí', 1], ['No', 0]] },
-  { k: 'infantil', s: 'Tus hijos', i: 'baby', when: (a) => a.hijos === 1, t: '¿Cuántos van a una escuela infantil pública?', sub: 'De 0 a 3 años.', o: (a) => upTo(a.nhijos) },
-  { k: 'cole', s: 'Tus hijos', i: 'school', when: (a) => a.hijos === 1, t: '¿Cuántos van a un colegio o instituto público?', o: (a) => upTo(a.nhijos) },
-  { k: 'extra', s: 'Tus hijos', i: 'ball', when: (a) => a.hijos === 1, t: '¿Cuántos hacen extraescolares o escuela deportiva municipal?', sub: 'Fútbol, natación, música, robótica…', o: (a) => upTo(a.nhijos) },
-  { k: 'pediatra', s: 'Tus hijos', i: 'hospital', when: (a) => a.hijos === 1, t: '¿Cuántas veces habéis ido al pediatra este año?', sub: 'Sumando a todos.', o: [['Ninguna', 0], ['1 a 3', 2], ['4 a 8', 6], ['Más de 8', 10]] },
-  { k: 'medico', s: 'Tu salud', i: 'hospital', t: '¿Cuántas veces has ido al médico de familia?', sub: 'Este año, contando llamadas.', o: [['Ninguna', 0], ['1 a 3', 2], ['4 a 10', 7], ['Más de 10', 12]] },
-  { k: 'esp', s: 'Tu salud', i: 'hospital', t: '¿Y al especialista o a hacerte pruebas?', sub: 'Dermatólogo, ginecóloga, análisis, radiografías…', o: [['Ninguna', 0], ['1 o 2', 2], ['3 a 5', 4], ['Más de 5', 7]] },
-  { k: 'psico', s: 'Tu salud', i: 'heart', t: '¿Has ido al psicólogo o al psiquiatra por la pública?', sub: 'Nadie más lo verá. Se queda en tu móvil.', o: [['No', 0], ['1 a 5 sesiones', 3], ['6 a 15', 10], ['Más de 15', 20]] },
-  { k: 'gordo', s: 'Tu salud', i: 'hospital', t: '¿Este año te ha tocado algo gordo?', o: [['Nada', ''], ['Urgencias', 'urg'], ['Una operación o un ingreso', 'ing'], ['Las dos cosas', 'ambas']] },
+  { k: 'nhijos', s: 'Tu familia', i: 'baby', when: (a) => a.edad >= 24, t: '¿Tienes hijos que vivan contigo?', o: [['No', 0], ['Uno', 1], ['Dos', 2], ['Tres o más', 3]] },
+  { k: 'hijosUso', s: 'Tus hijos', i: 'school', when: (a) => (a.nhijos || 0) > 0, multi: true, t: '¿Qué usan tus hijos de lo público?', sub: 'Marca todo lo que corresponda.', o: [['Escuela infantil pública', 'infantil'], ['Colegio o instituto público', 'cole'], ['Extraescolares o deporte municipal', 'extra'], ['Pediatra de la pública', 'pediatra'], ['Ha nacido uno este año', 'bebe'], ['Nada de esto', 'none']] },
+  { k: 'visitas', s: 'Tu salud', i: 'hospital', t: '¿Cuántas veces has ido al médico este año?', sub: 'Médico de familia, especialista y pruebas, contando llamadas.', o: [['Ninguna', 0], ['1 a 5', 3], ['6 a 15', 10], ['Más de 15', 20]] },
+  { k: 'salud2', s: 'Tu salud', i: 'heart', multi: true, t: '¿Has necesitado algo de esto?', sub: 'Marca todo lo que corresponda. Nadie más lo verá: se queda en tu móvil.', o: [['Urgencias', 'urg'], ['Una operación o un ingreso', 'ing'], ['Psicólogo o psiquiatra por la pública', 'psico'], ['Nada de esto', 'none']] },
   { k: 'emerg', s: 'Emergencias', i: 'fire', t: '¿Te han ayudado bomberos, protección civil o la UME?', o: [['No, por suerte', ''], ['Un incendio forestal cerca de casa', 'incendio'], ['Una inundación o una DANA', 'dana'], ['Otra emergencia (incendio en casa, accidente…)', 'otra']] },
   { k: 'transp', s: 'Tu día a día', i: 'bus', t: '¿Usas el transporte público?', sub: 'Bus, metro, cercanías, tranvía.', o: [['Nunca', 'nunca'], ['Algunas veces al mes', 'aveces'], ['Casi a diario', 'diario']] },
   { k: 'deporte', s: 'Tu tiempo libre', i: 'swim', multi: true, t: '¿Qué deporte público haces?', sub: 'Marca todo lo que corresponda.', o: [['Gimnasio o piscina municipal', 'gym'], ['Un club o escuela deportiva municipal', 'club'], ['Pistas públicas (fútbol, pádel, calistenia…)', 'pistas'], ['Nada de esto', 'none']] },
   { k: 'cultura', s: 'Tu tiempo libre', i: 'music', multi: true, t: '¿Qué cultura pública has disfrutado este año?', sub: 'Marca todo lo que corresponda.', o: [['Un museo o una exposición', 'museo'], ['Teatro, danza o un concierto', 'escena'], ['Un monumento o yacimiento', 'patri'], ['Fiestas, cine de verano o actividades de tu ayuntamiento', 'fiestas'], ['Talleres o clubes en la biblioteca', 'biblio'], ['Nada de esto', 'none']] },
-  { k: 'culturaN', s: 'Tu tiempo libre', i: 'music', when: (a) => a.cultura && a.cultura.length && a.cultura[0] !== 'none', t: '¿Cuántas veces en total?', o: [['1 a 3', 2], ['4 a 10', 7], ['Más de 10', 14]] },
   { k: 'worker', s: 'Una más', i: 'heart', open: true, t: '¿Qué trabajador público te ha marcado este año?', sub: 'No suma euros. Suma otra cosa. Elige uno o escribe el tuyo.', o: [['Una enfermera o enfermero', 'enfermera'], ['Una profe', 'profe'], ['Una médica o médico', 'medica'], ['Una bombera o bombero', 'bombero'], ['Quien conduce mi autobús', 'bus']] }
 ];
 
@@ -67,3 +59,28 @@ export const CLUB_B = {
   'Club Bata Blanca': ['hospital', 'El centro de salud ya forma parte de tu agenda, y tus hijos ya tiran de instituto y universidad.'],
   'Club Red': ['hands', 'Pensión, médico, centro de mayores: lo que aportaste toda la vida ahora te sostiene.']
 };
+
+
+// Pasa las respuestas condensadas a las variables que usa el cálculo.
+export function deriveA(A) {
+  const D = { ...A };
+  const n = D.nhijos || 0;
+  const u = D.hijosUso || [];
+  D.hijos = n > 0 ? 1 : 0;
+  if (D.hijos) {
+    D.infantil = u.includes('infantil') ? 1 : 0;
+    D.cole = u.includes('cole') ? n : 0;
+    D.extra = u.includes('extra') ? 1 : 0;
+    D.pediatra = u.includes('pediatra') ? 6 : 0;
+    D.bebe = u.includes('bebe') ? 1 : 0;
+  }
+  const v = D.visitas || 0;
+  D.medico = Math.round(v * 0.65);
+  D.esp = Math.round(v * 0.35);
+  const s2 = D.salud2 || [];
+  D.gordo = s2.includes('urg') && s2.includes('ing') ? 'ambas' : s2.includes('urg') ? 'urg' : s2.includes('ing') ? 'ing' : '';
+  D.psico = s2.includes('psico') ? 8 : 0;
+  const c = (D.cultura || []).filter((x) => x !== 'none').length;
+  D.culturaN = c === 0 ? 0 : c === 1 ? 2 : c <= 3 ? 7 : 14;
+  return D;
+}

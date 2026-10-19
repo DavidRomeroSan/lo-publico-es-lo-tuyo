@@ -61,3 +61,7 @@ npm run dev     # local
 npm test        # pruebas de cálculo
 npm run build   # dist/
 ```
+
+## Cuestionario corto y tarjetas
+- Hijos: 2 preguntas (cuántos; qué usan). Salud: 2 preguntas (visitas; urgencias, ingreso o psicólogo). `deriveA` en `src/questions.js` las convierte en las variables del cálculo (supuestos: cole = todos los hijos, escuela infantil/extraescolares = 1, pediatra = 6 visitas, visitas = 65 % médico de familia + 35 % especialista).
+- Se pueden compartir 3 tarjetas 1080×1920: mi año, mi vida y EE. UU. (`cards` en `src/slides.js`).
