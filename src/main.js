@@ -13,6 +13,18 @@ import { drawCard, shareBlobs, downloadBlob } from './share.js';
 
 document.body.insertAdjacentHTML('afterbegin', `<svg width="0" height="0" style="position:absolute" aria-hidden="true">${DEFS}</svg>`);
 const $ = (id) => document.getElementById(id);
+// Encoge el contenido de una pantalla hasta que quepa sin scroll (mínimo 55 %).
+function fit(el) {
+  if (!el || el.hidden) return;
+  el.classList.add('measuring');
+  el.style.setProperty('--fit', 1);
+  let z = 1;
+  while (el.scrollHeight > el.clientHeight && z > 0.55) { z = Math.round((z - 0.04) * 100) / 100; el.style.setProperty('--fit', z); }
+  el.classList.remove('measuring');
+}
+const current = () => document.querySelector('.screen:not([hidden]) .slide') || document.querySelector('.screen:not([hidden])');
+window.addEventListener('resize', () => fit(current()));
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => fit(current()));
 const SCREENS = ['home', 'quiz', 'form', 'story', 'fuentes'];
 let backFromSources = 'home';
 function show(id) {
@@ -20,6 +32,7 @@ function show(id) {
   const el = $(id); el.scrollTop = 0;
   const focusable = el.querySelector('h1, h2');
   if (focusable) { focusable.setAttribute('tabindex', '-1'); focusable.focus({ preventScroll: true }); }
+  if (id !== 'fuentes' && id !== 'story') fit(el);
 }
 
 // ---------- Portada ----------
@@ -87,6 +100,7 @@ function renderQ() {
       go.addEventListener('click', submit);
     }
   }
+  fit($('quiz'));
 }
 function advance() { hist.push(qi); const n = nextIndex(qi); if (n < 0) { finishA(); return; } qi = n; renderQ(); }
 $('qback').addEventListener('click', () => { if (hist.length) { qi = hist.pop(); renderQ(); } else show('home'); });
@@ -129,6 +143,7 @@ function renderSlide() {
   $('tap').hidden = last;
   $('next').textContent = last ? 'Volver a empezar' : 'Siguiente';
   $('prev').textContent = si === 0 ? 'Cambiar respuestas' : 'Atrás';
+  fit(document.querySelector('#slideHost .slide'));
   if (last) prepareCard();
 }
 async function prepareCard() {
@@ -152,6 +167,7 @@ function showCard() {
   const c = cards[ci];
   $('cardBox').innerHTML = `<img src="${cardUrls[ci]}" alt="Tu tarjeta de ${SITE.year}: ${c.eyebrow} ${c.total}." width="1080" height="1920">`;
   document.querySelectorAll('#cardTabs .tab').forEach((t) => t.setAttribute('aria-pressed', +t.dataset.i === ci));
+  fit(document.querySelector('#slideHost .slide'));
 }
 function toast(msg) { const t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => { t.hidden = true; }, 3000); }
 

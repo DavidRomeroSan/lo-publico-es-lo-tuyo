@@ -64,7 +64,7 @@ export async function drawCard(card) {
   ctx.fillText(card.total, M - 6, 770 + ts * 0.92);
 
   // Líneas
-  let y = 1130;
+  let y = 1110;
   ctx.strokeStyle = 'rgba(255,255,255,.45)'; ctx.lineWidth = 2;
   card.lines.slice(0, 5).forEach(([l, v]) => {
     ctx.font = `700 46px ${BODY}`;
@@ -76,24 +76,32 @@ export async function drawCard(card) {
     if (label !== l) label = label.trim() + '…';
     ctx.fillText(label, M, y);
     ctx.beginPath(); ctx.moveTo(M, y + 24); ctx.lineTo(W - M, y + 24); ctx.stroke();
-    y += 88;
+    y += 84;
   });
 
-  // Club
-  const clubTxt = (card.tag || card.club).toUpperCase();
-  const cs = fitText(ctx, clubTxt, W - 2 * M, 130, 900, DISPLAY, 'extra-condensed');
-  ctx.fillStyle = DEEP; ctx.fillRect(M - 12, 1640 - cs * 0.86, ctx.measureText(clubTxt).width + 24, cs * 1.0);
+  // Etiqueta (club, «desde que nací»…)
+  const tagTxt = (card.tag || card.club).toUpperCase();
+  const cs = fitText(ctx, tagTxt, W - 2 * M, 100, 900, DISPLAY, 'extra-condensed');
+  ctx.fillStyle = DEEP; ctx.fillRect(M - 12, 1590 - cs * 0.86, ctx.measureText(tagTxt).width + 24, cs * 1.0);
   ctx.fillStyle = WHITE; ctx.font = `900 extra-condensed ${cs}px ${DISPLAY}`;
-  ctx.fillText(clubTxt, M, 1640);
+  ctx.fillText(tagTxt, M, 1590);
+
+  // Lema de la campaña, bien grande
+  const lema = SITE.lema.toUpperCase();
+  const ls = fitText(ctx, lema, W - 2 * M - 70, 120, 900, DISPLAY, 'extra-condensed');
+  ctx.fillStyle = WHITE;
+  ctx.beginPath(); ctx.roundRect(M - 12, 1630, W - 2 * M + 24, 138, 28); ctx.fill();
+  ctx.fillStyle = RED; ctx.textAlign = 'center';
+  ctx.font = `900 extra-condensed ${ls}px ${DISPLAY}`;
+  ctx.fillText(lema, W / 2, 1630 + 69 + ls * 0.33);
+  ctx.textAlign = 'left'; ctx.fillStyle = WHITE;
 
   // Pie
-  ctx.font = `700 34px ${BODY}`;
-  ctx.fillText(SITE.lema, M, 1760);
-  ctx.globalAlpha = 0.9;
+  ctx.globalAlpha = 0.92;
   ctx.font = `400 28px ${BODY}`;
-  ctx.fillText(card.foot, M, 1806);
-  ctx.font = `700 30px ${BODY}`;
-  ctx.fillText(`Haz el tuyo en ${SITE.url}`, M, 1850);
+  ctx.fillText(card.foot, M, 1822);
+  ctx.font = `700 32px ${BODY}`;
+  ctx.fillText(`Haz el tuyo en ${SITE.url}`, M, 1870);
   ctx.globalAlpha = 1;
 
   return new Promise((res) => cv.toBlob((b) => res(b), 'image/png'));
