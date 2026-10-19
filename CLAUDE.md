@@ -38,16 +38,17 @@ Falta: crear el repositorio en GitHub, publicar con GitHub Pages y rellenar el e
 
 ## Producto
 - Portada → versión A (preguntas con ramas) o «¿Con prisa?» → versión B (nombre, sexo, edad y una pregunta abierta).
-- Versión A: ciudad (Madrid, Barcelona, Bilbao, Vitoria, otra), edad, situación (estudio, trabajo, paro, jubilación), estudios, vivienda (incluye vivienda pública y Bono Alquiler Joven), hogar, hijos (solo si tiene: escuela infantil, cole, extraescolares, pediatra, nacimiento), salud (incluye salud mental), emergencias (incendio forestal, DANA), transporte, deporte, cultura y trabajador público del año.
+- Versión A: sin pregunta de ciudad (se usa `CITY.media`, media de Madrid, Barcelona, Bilbao y Vitoria), edad (18-23 / 24-30…; hijos solo desde 24), situación (estudio, trabajo, paro, jubilación), estudios, vivienda (incluye vivienda pública y Bono Alquiler Joven), hogar, hijos (solo si tiene: escuela infantil, cole, extraescolares, pediatra, nacimiento), salud (incluye salud mental), emergencias (incendio forestal, DANA), transporte, deporte, cultura y trabajador público del año.
 - Láminas: veces que lo público ha estado ahí, nº 1, top 5, «Lo que no ves», «Lo público ha mejorado», club, hijos, persona del año, total del año, total del hogar, toda tu vida con reparto en %, comparación con EE. UU. a escala de sistema, cierre y tarjeta.
 - Clubes ponderados para que no gane siempre la sanidad (pesos en `CLUB_W`). Una emergencia da siempre el Club de Guardia.
 - Versión B: clubes por etapa anclados a datos (emancipación media 30,2 años; primer hijo 31,5 años).
 
 ## Reglas de cifras
-- Año: precios privados reales (parte alta de los rangos) por ciudad + «Lo que no ves» (1.461 €/persona, IGAE 2024).
+- Año: precios privados reales (parte alta de los rangos), media de las grandes ciudades (`CITY.media`) + «Lo que no ves» (1.461 €/persona, IGAE 2024).
 - Toda la vida: gasto público medio por persona y año + años de estudio en la pública. Se presenta como «lo que ha puesto lo público», no como precio privado.
 - Cada cifra nueva necesita fuente en `SOURCES` (`src/data.js`). No inventar datos.
-- Supuestos a revisar: precios de Bilbao, Vitoria y «otra ciudad» son un ajuste sobre Madrid (salvo alquiler, que es real); vivienda protegida = 40 % bajo mercado en 70 m²; curva de visitas por edad y sexo de la versión B; transporte con tarifas que cubren el 40 % del coste.
+- Familia: pensiones (nº de personas × pensión media) y dependencia (dato de beneficiarios, sin euros por falta de fuente). Trabajador del año: 5 opciones + campo abierto.
+- Supuestos a revisar: `CITY.media` es la media simple de las 4 ciudades; precios de Bilbao, Vitoria y «otra ciudad» son un ajuste sobre Madrid (salvo alquiler, que es real); vivienda protegida = 40 % bajo mercado en 70 m²; curva de visitas por edad y sexo de la versión B; transporte con tarifas que cubren el 40 % del coste.
 
 ## Estilo
 - Rojo #E1001A, rojo hondo #9E0013, tinta #17100F, rosa #FFE1E4. Sin logo del partido.

@@ -3,7 +3,7 @@ import { CITY, P, NOVES, VPO_DESCUENTO, VPO_M2, MEDIA_MEDICO, FACTS } from './da
 import { isStudent, CLUB_W } from './questions.js';
 
 export function computeA(a) {
-  const c = CITY[a.ciudad] || CITY.otra;
+  const c = CITY[a.ciudad] || CITY.media;
   const f = c.f;
   const age = a.edad;
   const L = {};
@@ -19,7 +19,6 @@ export function computeA(a) {
     if (a.estudia === 'uni') add('estud', 'Tu universidad', P.uniPriv * f - c.mat, 'Educación');
   }
   add('paro', 'Tu prestación por desempleo', (a.paro || 0) * P.paro, 'Protección');
-  add('pension', 'Tu pensión', (a.pension || 0) * P.pension, 'Protección');
   add('bono', 'Bono Alquiler Joven', (a.bono || 0) * P.bono, 'Vivienda');
   if (a.vivienda === 'publica') add('vpo', 'Tu vivienda pública', c.m2 * VPO_M2 * 12 * VPO_DESCUENTO, 'Vivienda');
   if (a.bebe) {
@@ -45,7 +44,8 @@ export function computeA(a) {
   const kids = Object.values(K).reduce((s, x) => s + x.v, 0);
   const otros = Math.max(0, (a.adultos || 1) - 1);
   const otrosV = otros * (P.saludPC + NOVES);
-  const casa = personal + kids + otrosV;
+  const famV = (a.pensF || 0) * P.pension;
+  const casa = personal + kids + otrosV + famV;
 
   // Club: grupo con más peso ponderado
   const G = {};
@@ -54,6 +54,7 @@ export function computeA(a) {
     G.Educación = (G.Educación || 0) + (K.cole ? K.cole.v : 0) + (K.infantil ? K.infantil.v : 0);
     G.Deporte = (G.Deporte || 0) + (K.extra ? K.extra.v : 0);
   }
+  if (famV) G.Protección = (G.Protección || 0) + famV;
   if (a.emerg) G.Emergencias = 1e7;
   let club = 'Sanidad'; let best = -1;
   Object.entries(G).forEach(([g, v]) => { const sc = v * (CLUB_W[g] || 1); if (sc > best) { best = sc; club = g; } });
@@ -81,18 +82,19 @@ export function computeA(a) {
     ['Cultura y deporte', age * P.ocio],
     ['Transporte público', yTrans * ({ aveces: 240, diario: 720 }[a.transp] || 120)]
   ];
-  if (a.pension) vida.push(['Pensiones', P.pension * Math.max(1, age - 66)]);
   if (a.vivienda === 'publica') vida.push(['Vivienda', L.vpo.v]);
   const vidaTotal = vida.reduce((s, x) => s + x[1], 0);
 
   const ranked = Object.entries(L).filter(([k, x]) => x.v > 0 && k !== 'noves').sort((x, y) => y[1].v - x[1].v);
-  return { c, L, ranked, personal, K, kids, otros, otrosV, casa, veces, vida, vidaTotal, club, G };
+  return { c, L, ranked, personal, K, kids, otros, otrosV, famV, casa, veces, vida, vidaTotal, club, G };
 }
 
 export function pickFacts(a, r) {
   const out = [];
   const push = (k) => { if (FACTS[k] && !out.includes(k)) out.push(k); };
   if (a.emerg) push('Emergencias');
+  if (a.dep) push('Dependencia');
+  if (a.pensF) push('Pensiones');
   const order = Object.entries(r.G)
     .sort((x, y) => y[1] * (CLUB_W[y[0]] || 1) - x[1] * (CLUB_W[x[0]] || 1))
     .map((x) => x[0]);

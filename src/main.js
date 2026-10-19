@@ -26,7 +26,7 @@ function show(id) {
 $('homeIcons').innerHTML = `<div class="track">${[...TILES, ...TILES].map((k) => art(k, 'tile')).join('')}</div>`;
 $('homeYear').textContent = SITE.year;
 (() => {
-  const s = { ciudad: 'bilbao', edad: 34, sit: 'trabajo', estudios: ['cole', 'uni'], vivienda: 'alquiler', bono: 1, adultos: 2, hijos: 1, nhijos: 1, bebe: 0, infantil: 0, cole: 1, extra: 1, pediatra: 4, medico: 4, esp: 2, psico: 3, gordo: 'urg', emerg: '', transp: 'diario', deporte: ['gym'], cultura: ['museo', 'fiestas'], culturaN: 7, worker: 'profe' };
+  const s = { edad: 34, sit: 'trabajo', estudios: ['cole', 'uni'], vivienda: 'alquiler', bono: 1, adultos: 2, hijos: 1, nhijos: 1, bebe: 0, infantil: 0, cole: 1, extra: 1, pediatra: 4, medico: 4, esp: 2, psico: 3, gordo: 'urg', emerg: '', transp: 'diario', deporte: ['gym'], cultura: ['museo', 'fiestas'], culturaN: 7, worker: 'profe' };
   $('sampleTotal').textContent = eur(computeA(s).vidaTotal);
 })();
 if (SITE.emisor) { $('emisor').textContent = `Promueve: ${SITE.emisor}`; $('emisor').hidden = false; }
@@ -73,9 +73,19 @@ function renderQ() {
     opts.forEach(([l, v]) => {
       const b = document.createElement('button'); b.type = 'button';
       b.className = 'opt' + (A[q.k] === v ? ' on' : ''); b.textContent = l;
-      b.addEventListener('click', () => { A[q.k] = v; b.classList.add('on'); setTimeout(advance, 150); });
+      b.addEventListener('click', () => { A[q.k] = v; delete A.workerTxt; b.classList.add('on'); setTimeout(advance, 150); });
       box.appendChild(b);
     });
+    if (q.open) {
+      const row = document.createElement('div'); row.className = 'openrow';
+      row.innerHTML = '<label for="qopen">O escribe el tuyo</label><div><input id="qopen" type="text" maxlength="40" placeholder="La bibliotecaria de mi barrio" autocomplete="off"><button class="btn" type="button" id="qopengo" disabled>Seguir</button></div>';
+      box.appendChild(row);
+      const inp = row.querySelector('input'); const go = row.querySelector('button');
+      const submit = () => { const t = inp.value.trim(); if (!t) return; A[q.k] = 'otro'; A.workerTxt = t; advance(); };
+      inp.addEventListener('input', () => { go.disabled = !inp.value.trim(); });
+      inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
+      go.addEventListener('click', submit);
+    }
   }
 }
 function advance() { hist.push(qi); const n = nextIndex(qi); if (n < 0) { finishA(); return; } qi = n; renderQ(); }

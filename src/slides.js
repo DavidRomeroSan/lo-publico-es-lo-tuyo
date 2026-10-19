@@ -60,12 +60,20 @@ export function buildA(r, a) {
     SL.push(['red', `${art('school')}<p class="eyebrow">Tus hijos en lo público</p><p class="big m">${eur(vidaHijo)}</p><p>te costaría criar a cada hijo en la privada en ${city}, de los 0 a los 18, solo en escuela infantil y colegio.</p>${n > 1 ? `<p>Con ${n} en la pública: <b class="acc">${eur(n * vidaHijo)}</b>.</p>` : ''}`]);
   }
 
-  const w = WORKER[a.worker] || WORKER.enfermera;
-  SL.push(['white', `${art(w[2])}<p class="eyebrow acc">Tu persona del año</p><h2 class="disp l">${w[0]}</h2><p class="lg">${w[1]}</p>`]);
+  if (a.pensF || a.dep) {
+    SL.push(['ink', `${art('hands')}<p class="eyebrow">Los tuyos</p>${a.pensF ? `<p class="big m">${eur(r.famV)}</p><p>pone lo público cada año en las pensiones de tu familia (${a.pensF}), con la pensión media de jubilación.</p>` : '<h2 class="disp xl">No están solos</h2>'}${a.dep ? '<p>Y en los cuidados: 1,65 millones de personas reciben ya una prestación de dependencia. Es la cifra más alta de la historia.</p>' : ''}<p class="small">Pensión media de jubilación, abril de 2026. Beneficiarios de dependencia, primer trimestre de 2026.</p>`]);
+  }
+
+  if (a.worker === 'otro' && a.workerTxt) {
+    SL.push(['white', `${art('heart')}<p class="eyebrow acc">Tu persona del año</p><h2 class="disp l">${esc(a.workerTxt)}</h2><p class="lg">No suma euros. Suma otra cosa. Y está ahí porque lo sostenemos entre todos.</p>`]);
+  } else {
+    const w = WORKER[a.worker] || WORKER.enfermera;
+    SL.push(['white', `${art(w[2])}<p class="eyebrow acc">Tu persona del año</p><h2 class="disp l">${w[0]}</h2><p class="lg">${w[1]}</p>`]);
+  }
 
   SL.push(['red', `${art('heart', 'sm')}<p class="year">${Y}</p><p class="eyebrow">Lo público te ha salvado de pagar</p><p class="big m">${eur(r.personal)}</p><p>este año, solo a ti. Sin lo público, esto habría salido de tu bolsillo.</p>`]);
-  if ((a.adultos || 1) > 1 || r.kids > 0) {
-    SL.push(['pink', `${art('house')}<p class="eyebrow acc">Y a tu casa</p><p class="big m acc-text">${eur(r.casa)}</p><div class="split"><div><span>Tú</span><span>${eur(r.personal)}</span></div>${Object.values(r.K).map((x) => `<div><span>${x.label}</span><span>${eur(x.v)}</span></div>`).join('')}${r.otros ? `<div><span>${r.otros} adulto${r.otros > 1 ? 's' : ''} más (gasto público medio)</span><span>${eur(r.otrosV)}</span></div>` : ''}</div>`]);
+  if ((a.adultos || 1) > 1 || r.kids > 0 || r.famV > 0) {
+    SL.push(['pink', `${art('house')}<p class="eyebrow acc">Y a tu casa</p><p class="big m acc-text">${eur(r.casa)}</p><div class="split"><div><span>Tú</span><span>${eur(r.personal)}</span></div>${Object.values(r.K).map((x) => `<div><span>${x.label}</span><span>${eur(x.v)}</span></div>`).join('')}${r.famV ? `<div><span>Pensiones de tu familia (${a.pensF})</span><span>${eur(r.famV)}</span></div>` : ''}${r.otros ? `<div><span>${r.otros} adulto${r.otros > 1 ? 's' : ''} más (gasto público medio)</span><span>${eur(r.otrosV)}</span></div>` : ''}</div>`]);
   }
 
   const vt = r.vidaTotal;

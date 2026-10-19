@@ -18,7 +18,9 @@ export const CITY = {
   barcelona: { n: 'Barcelona',       f: 1.05, m2: 20.1, mat: 1508 },
   bilbao:    { n: 'Bilbao',          f: 0.95, m2: 15.7, mat: 1000 },
   vitoria:   { n: 'Vitoria-Gasteiz', f: 0.92, m2: 12.3, mat: 1000 },
-  otra:      { n: 'tu ciudad',       f: 0.90, m2: 15.1, mat: 1000 }
+  otra:      { n: 'tu ciudad',       f: 0.90, m2: 15.1, mat: 1000 },
+  // Referencia única de la web: media de las cuatro ciudades de arriba. No preguntamos dónde vives.
+  media:     { n: 'las grandes ciudades', f: 0.98, m2: 17.9, mat: 1282 }
 };
 
 export const P = {
@@ -60,6 +62,8 @@ export const FACTS = {
   Cultura: ['music', '47,6 %', 'de la gente fue a un museo el último año. Los mejores datos de consumo cultural de la historia.'],
   Deporte: ['swim', '+43,4 %', 'ha crecido el gasto público en cultura, ocio y deporte entre 2020 y 2024.'],
   Emergencias: ['fire', 'Más de 1 millón', 'de hectáreas ardieron en la UE en 2025, récord histórico. Los equipos públicos estuvieron en primera línea.'],
+  Dependencia: ['heart', '1,65 millones', 'de personas reciben una prestación de dependencia, la cifra más alta de la historia. La aportación del Estado ha crecido un 150 % en cinco años.'],
+  Pensiones: ['hands', '10,4 millones', 'de pensiones se pagan cada mes a más de 9,4 millones de personas (diciembre de 2025).'],
   Medio: ['tree', '+44,1 %', 'ha crecido el gasto público en protección del medio ambiente entre 2020 y 2024.']
 };
 
@@ -82,6 +86,8 @@ export const SOURCES = [
   ['Salario medio 2023 (INE)', 'https://ine.es/dyngs/Prensa/EAES2023.htm'],
   ['Prestación media por desempleo 2025', 'https://www.elindependiente.com/economia/2025/08/24/gasto-prestaciones-desempleo-aumenta-7-primer-semestre/amp/'],
   ['Pensión media de jubilación, abril 2026 (La Moncloa)', 'https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/inclusion/paginas/2026/280426-inclusion-pension-media-abril.aspx'],
+  ['Beneficiarios de dependencia, primer trimestre de 2026 (DSCA)', 'https://www.dsca.gob.es/ca/comunicacion/notas-prensa/numero-beneficiarios-dependencia-alcanza-su-mayor-cifra-historica'],
+  ['Pensiones pagadas en diciembre de 2025 (Forbes, con datos de la Seguridad Social)', 'https://forbes.es/economia/850309/el-gasto-en-pensiones-sube-un-6-en-diciembre-hasta-la-cifra-record-de-13-750-millones-de-euros/'],
   ['Bono Alquiler Joven y Plan Estatal 2026-2030', 'https://www.ineaf.es/tribuna/bono-de-alquiler-joven/'],
   ['Abono único de transporte', 'https://www.elindependiente.com/economia/2025/12/16/abono-transporte-anunciado-pedro-sanchez/'],
   ['Cobertura de las tarifas de transporte (UITP)', 'https://www.uitp.org/wp-content/uploads/sites/7/2025/10/20251002_ES_Fare-Affordability_Policy-Brief_WEB.pdf'],

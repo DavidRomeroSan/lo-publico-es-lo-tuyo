@@ -1,7 +1,7 @@
 # Tu año en lo público
 
 Web móvil tipo «Wrapped» que calcula cuánto te ha ahorrado lo público este año y desde que naciste.
-Dos recorridos: preguntas con ramas (ciudad, estudios, hijos, vivienda, salud, emergencias, transporte, deporte, cultura) o versión rápida con nombre, sexo y edad.
+Dos recorridos: preguntas con ramas (estudios, hijos, vivienda, salud, emergencias, transporte, deporte, cultura) o versión rápida con nombre, sexo y edad.
 
 - Todo se calcula en el navegador: no hay servidor, base de datos, cookies ni analítica.
 - Tipografías servidas desde la propia web (sin llamadas a terceros).

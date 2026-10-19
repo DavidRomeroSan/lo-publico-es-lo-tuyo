@@ -3,12 +3,12 @@ export const isStudent = (a) => a.sit === 'estudio' || a.sit === 'ambos';
 const upTo = (n) => [['Ninguno', 0], ['Uno', 1], ['Dos', 2], ['Tres', 3]].slice(0, (n || 1) + 1);
 
 export const Q = [
-  { k: 'ciudad', s: 'Sobre ti', i: 'city', t: '¿Dónde vives?', o: [['Madrid', 'madrid'], ['Barcelona', 'barcelona'], ['Bilbao', 'bilbao'], ['Vitoria-Gasteiz', 'vitoria'], ['En otra ciudad o pueblo', 'otra']] },
   { k: 'edad', s: 'Sobre ti', i: 'heart', t: '¿Cuántos años tienes?', o: [['16 o 17', 17], ['18 a 23', 20], ['24 a 30', 27], ['31 a 38', 34], ['39 a 45', 42], ['46 a 64', 55], ['65 o más', 70]] },
   { k: 'sit', s: 'Sobre ti', i: 'hands', t: '¿Qué haces ahora mismo?', o: (a) => [['Estudio', 'estudio'], ['Trabajo', 'trabajo'], ['Estudio y trabajo', 'ambos'], ['Busco trabajo', 'paro'], ['Cuido de mi casa o familia', 'casa']].concat(a.edad >= 55 ? [['Estoy jubilado o jubilada', 'jubilado']] : []) },
   { k: 'estudia', s: 'Tus estudios', i: 'cap', when: isStudent, t: '¿Dónde estudias?', o: [['Instituto público (ESO o Bachillerato)', 'inst'], ['FP pública', 'fp'], ['Universidad pública', 'uni'], ['En un centro privado o concertado', 'otra']] },
   { k: 'paro', s: 'Tu trabajo', i: 'hands', when: (a) => a.sit === 'paro', t: '¿Cuántos meses has cobrado paro o subsidio este año?', o: [['Ninguno', 0], ['1 a 3', 2], ['4 a 6', 5], ['7 a 12', 10]] },
-  { k: 'pension', s: 'Tu pensión', i: 'hands', when: (a) => a.sit === 'jubilado', t: '¿Cobras una pensión?', two: true, o: [['Sí', 1], ['No', 0]] },
+  { k: 'pensF', s: 'Los tuyos', i: 'hands', t: '¿Cuántas personas de tu familia cobran una pensión?', sub: 'Padres, abuelos o tú, si estás jubilado. De jubilación, viudedad o invalidez.', o: [['Nadie', 0], ['Una', 1], ['Dos', 2], ['Tres o más', 3]] },
+  { k: 'dep', s: 'Los tuyos', i: 'heart', t: '¿Alguien de tu familia recibe ayuda por dependencia?', sub: 'Ayuda a domicilio, centro de día, residencia o una prestación por cuidar a un familiar.', two: true, o: [['Sí', 1], ['No', 0]] },
   { k: 'estudios', s: 'Tus estudios', i: 'school', when: (a) => !isStudent(a), multi: true, t: '¿Dónde estudiaste?', sub: 'Marca todo lo que corresponda.', o: [['Colegio o instituto público', 'cole'], ['FP pública', 'fp'], ['Universidad pública', 'uni'], ['Nada de esto', 'none']] },
   { k: 'vivienda', s: 'Tu casa', i: 'house', t: '¿Cómo vives?', o: [['Con mi familia', 'familia'], ['De alquiler', 'alquiler'], ['En un piso compartido', 'compartido'], ['En una vivienda pública o protegida', 'publica'], ['En una casa en propiedad', 'propiedad']] },
   { k: 'bono', s: 'Tu casa', i: 'house', when: (a) => (a.vivienda === 'alquiler' || a.vivienda === 'compartido') && a.edad <= 34, t: '¿Te ha llegado el Bono Alquiler Joven?', sub: 'Hasta 250 € al mes para menores de 36 años.', two: true, o: [['Sí', 1], ['No', 0]] },
@@ -29,7 +29,7 @@ export const Q = [
   { k: 'deporte', s: 'Tu tiempo libre', i: 'swim', multi: true, t: '¿Qué deporte público haces?', sub: 'Marca todo lo que corresponda.', o: [['Gimnasio o piscina municipal', 'gym'], ['Un club o escuela deportiva municipal', 'club'], ['Pistas públicas (fútbol, pádel, calistenia…)', 'pistas'], ['Nada de esto', 'none']] },
   { k: 'cultura', s: 'Tu tiempo libre', i: 'music', multi: true, t: '¿Qué cultura pública has disfrutado este año?', sub: 'Marca todo lo que corresponda.', o: [['Un museo o una exposición', 'museo'], ['Teatro, danza o un concierto', 'escena'], ['Un monumento o yacimiento', 'patri'], ['Fiestas, cine de verano o actividades de tu ayuntamiento', 'fiestas'], ['Talleres o clubes en la biblioteca', 'biblio'], ['Nada de esto', 'none']] },
   { k: 'culturaN', s: 'Tu tiempo libre', i: 'music', when: (a) => a.cultura && a.cultura.length && a.cultura[0] !== 'none', t: '¿Cuántas veces en total?', o: [['1 a 3', 2], ['4 a 10', 7], ['Más de 10', 14]] },
-  { k: 'worker', s: 'Una más', i: 'heart', t: '¿Qué trabajador público te ha marcado este año?', sub: 'No suma euros. Suma otra cosa.', o: [['Una enfermera o enfermero', 'enfermera'], ['Una profe', 'profe'], ['Una médica o médico', 'medica'], ['Una bombera o bombero', 'bombero'], ['La psicóloga', 'psico'], ['El conductor del autobús', 'bus'], ['La monitora del polideportivo', 'monitora'], ['Quien barre mi calle', 'barrendera']] }
+  { k: 'worker', s: 'Una más', i: 'heart', open: true, t: '¿Qué trabajador público te ha marcado este año?', sub: 'No suma euros. Suma otra cosa. Elige uno o escribe el tuyo.', o: [['Una enfermera o enfermero', 'enfermera'], ['Una profe', 'profe'], ['Una médica o médico', 'medica'], ['Una bombera o bombero', 'bombero'], ['Quien conduce mi autobús', 'bus']] }
 ];
 
 export const WORKER = {

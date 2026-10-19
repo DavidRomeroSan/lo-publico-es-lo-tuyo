@@ -44,3 +44,15 @@ test('etapas de la versión B', () => {
   const r = computeB('Ana', 'mujer', 30, '');
   assert.ok(r.vidaTotal > 200000);
 });
+
+test('sin ciudad se usa la media de las grandes ciudades', () => {
+  const r = computeA({ ...base, ciudad: undefined, medico: 2 });
+  assert.equal(r.c.n, 'las grandes ciudades');
+});
+
+test('las pensiones de la familia suman a la casa y no a ti', () => {
+  const r = computeA({ ...base, pensF: 2 });
+  assert.equal(r.personal, 1461);
+  assert.equal(r.famV, 2 * 21976);
+  assert.equal(r.casa, 1461 + 2 * 21976);
+});

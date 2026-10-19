@@ -234,3 +234,11 @@ a { color: inherit; }
 /* Tarjeta final */
 .cardbox img { box-shadow: 0 16px 40px rgba(158,0,19,.35); }
 .cardbox { flex: none; }
+
+/* Campo abierto en preguntas */
+.openrow { display: grid; gap: 6px; margin-top: 6px; }
+.openrow label { font-weight: 700; font-size: 15px; }
+.openrow > div { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+.openrow input { font: 600 18px var(--f-body); padding: 13px 14px; border: 2px solid var(--tinta); border-radius: 12px; min-width: 0; color: var(--tinta); background: var(--papel); }
+.openrow input:focus-visible { outline: 3px solid var(--rojo); outline-offset: 1px; }
+.openrow .btn { padding: 0 20px; font-size: 16px; }
