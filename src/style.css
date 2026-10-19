@@ -263,3 +263,15 @@ a { color: inherit; }
   #qico { width: 56px; height: 56px; }
 }
 .cardbox { min-height: 0; }
+
+/* Top 5 */
+.rank li { grid-template-columns: 30px 34px 1fr auto; align-items: center; gap: 8px; }
+.rank li .ico { width: 30px; height: 30px; }
+.rank .bar { grid-column: 2 / 5; }
+.rank li.first { background: var(--oro); color: var(--tinta); padding: 14px 12px; }
+.rank li.first .n { color: var(--rojo); font-size: 40px; }
+.rank li.first .name { font-size: 20px; }
+.rank li.first .eur { font-size: 20px; }
+.rank li.first .bar { background: rgba(23,16,15,.15); }
+.rank li.first .bar i { background: var(--rojo); }
+.rank li .eur { font-family: var(--f-display); font-weight: 800; font-stretch: 80%; font-size: 19px; }

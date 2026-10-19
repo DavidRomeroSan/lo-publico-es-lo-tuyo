@@ -35,7 +35,7 @@ export const WORKER = {
   barrendera: ['Gracias, compañero.', 'Por cuidar tu calle cada madrugada sin que nadie le vea.', 'lamp']
 };
 
-export const GRP_ICO = { Sanidad: 'hospital', Educación: 'school', Protección: 'hands', Vivienda: 'house', Transporte: 'bus', Cultura: 'music', Deporte: 'swim', Emergencias: 'fire' };
+export const GRP_ICO = { Sanidad: 'hospital', Educación: 'school', Protección: 'hands', Vivienda: 'house', Transporte: 'bus', Cultura: 'music', Deporte: 'swim', Emergencias: 'fire', Ciudad: 'lamp' };
 
 export const CLUB = {
   Vivienda: ['Club Llave', 'Tener techo a un precio justo no debería ser suerte. Este año, lo público te ha echado una mano con la llave.'],

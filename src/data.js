@@ -50,21 +50,23 @@ export const MEDIA_MEDICO = 5.1;
 
 export const US = { seguro: 9325, seguroFam: 26993, uniPriv: 45000, guarde: 13128, parto: 14000 };
 
-// «Lo público ha mejorado»: [icono, cifra, texto]
+// «Lo público ha mejorado»: [icono, cifra, texto, grupo]. Batería de 15; cada visita enseña 3 al azar.
 export const FACTS = {
-  Sanidad: ['hospital', '84,01 años', 'de esperanza de vida en España en 2024. Nunca habíamos vivido tanto.'],
-  Educación: ['school', '12,8 %', 'de abandono escolar temprano en 2025, mínimo histórico. Hace diez años rondaba el 20 %.'],
-  EducaciónGasto: ['cap', '71.349 M€', 'de gasto público en educación en 2024. Nunca se había invertido tanto.'],
-  Protección: ['baby', '19 semanas', 'de permiso pagado por nacimiento para cada progenitor. En 2007, los padres tenían 13 días.'],
-  Vivienda: ['house', '+47,9 %', 'ha crecido el gasto público en vivienda y servicios comunitarios entre 2020 y 2024.'],
-  ViviendaBono: ['house', 'Hasta 300 €', 'al mes de ayuda al alquiler joven con el nuevo Plan Estatal 2026-2030.'],
-  Transporte: ['train', '30 € al mes', 'cuesta el abono único estatal para menores de 26. 60 € para el resto.'],
-  Cultura: ['music', '47,6 %', 'de la gente fue a un museo el último año. Los mejores datos de consumo cultural de la historia.'],
-  Deporte: ['swim', '+43,4 %', 'ha crecido el gasto público en cultura, ocio y deporte entre 2020 y 2024.'],
-  Emergencias: ['fire', 'Más de 1 millón', 'de hectáreas ardieron en la UE en 2025, récord histórico. Los equipos públicos estuvieron en primera línea.'],
-  Dependencia: ['heart', '1,65 millones', 'de personas reciben una prestación de dependencia, la cifra más alta de la historia. La aportación del Estado ha crecido un 150 % en cinco años.'],
-  Pensiones: ['hands', '10,4 millones', 'de pensiones se pagan cada mes a más de 9,4 millones de personas (diciembre de 2025).'],
-  Medio: ['tree', '+44,1 %', 'ha crecido el gasto público en protección del medio ambiente entre 2020 y 2024.']
+  Sanidad: ['hospital', '84,01 años', 'de esperanza de vida en España en 2024. Nunca habíamos vivido tanto.', 'Sanidad'],
+  Trasplantes: ['hospital', '51,9 por millón', 'de donantes de órganos en España en 2025. Somos líderes mundiales en donación y trasplantes.', 'Sanidad'],
+  Educación: ['school', '12,8 %', 'de abandono escolar temprano en 2025, mínimo histórico. Hace diez años rondaba el 20 %.', 'Educación'],
+  EducaciónGasto: ['cap', '71.349 M€', 'de gasto público en educación en 2024. Nunca se había invertido tanto.', 'Educación'],
+  Protección: ['baby', '19 semanas', 'de permiso pagado por nacimiento para cada progenitor. En 2007, los padres tenían 13 días.', 'Protección'],
+  Dependencia: ['heart', '1,65 millones', 'de personas reciben una prestación de dependencia, la cifra más alta de la historia. La aportación del Estado ha crecido un 150 % en cinco años.', 'Protección'],
+  Pensiones: ['hands', '+2,7 %', 'han subido las pensiones contributivas en 2026. Casi 12 millones de pensiones se pagan cada mes.', 'Protección'],
+  SMI: ['hands', '1.221 €', 'al mes en 14 pagas es el salario mínimo de 2026. Ha subido cerca de un 66 % desde 2018.', 'Protección'],
+  Empleo: ['city', '22,5 millones', 'de personas cotizando a la Seguridad Social en julio de 2026. Es la primera vez que se supera esa cifra.', 'Protección'],
+  Vivienda: ['house', '+47,9 %', 'ha crecido el gasto público en vivienda y servicios comunitarios entre 2020 y 2024.', 'Vivienda'],
+  ViviendaBono: ['house', 'Hasta 300 €', 'al mes de ayuda al alquiler joven con el nuevo Plan Estatal 2026-2030.', 'Vivienda'],
+  Transporte: ['train', '30 € al mes', 'cuesta el abono único estatal para menores de 26. 60 € para el resto.', 'Transporte'],
+  Cultura: ['music', '47,6 %', 'de la gente fue a un museo el último año. Los mejores datos de consumo cultural de la historia.', 'Cultura'],
+  Deporte: ['swim', '+43,4 %', 'ha crecido el gasto público en cultura, ocio y deporte entre 2020 y 2024.', 'Deporte'],
+  Medio: ['tree', '+44,1 %', 'ha crecido el gasto público en protección del medio ambiente entre 2020 y 2024.', 'Medio']
 };
 
 export const SOURCES = [
@@ -88,6 +90,10 @@ export const SOURCES = [
   ['Pensión media de jubilación, abril 2026 (La Moncloa)', 'https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/inclusion/paginas/2026/280426-inclusion-pension-media-abril.aspx'],
   ['Beneficiarios de dependencia, primer trimestre de 2026 (DSCA)', 'https://www.dsca.gob.es/ca/comunicacion/notas-prensa/numero-beneficiarios-dependencia-alcanza-su-mayor-cifra-historica'],
   ['Pensiones pagadas en diciembre de 2025 (Forbes, con datos de la Seguridad Social)', 'https://forbes.es/economia/850309/el-gasto-en-pensiones-sube-un-6-en-diciembre-hasta-la-cifra-record-de-13-750-millones-de-euros/'],
+  ['Trasplantes y donación de órganos 2025 (La Moncloa)', 'https://www.lamoncloa.gob.es/serviciosdeprensa/notasprensa/sanidad14/paginas/2026/160126-balance-trasplantes-2025.aspx'],
+  ['Revalorización de las pensiones en 2026 (Vozpópuli)', 'https://www.vozpopuli.com/economia/macroeconomia/la-factura-de-las-pensiones-supera-la-barrera-de-los-16000-millones-al-mes-con-la-ultima-subida.html'],
+  ['Salario mínimo interprofesional 2026 (Wolters Kluwer)', 'https://www.wolterskluwer.com/es-es/expert-insights/smi-2026-salario-minimo'],
+  ['Afiliación a la Seguridad Social, julio de 2026 (El Debate)', 'https://www.eldebate.com/economia/20260804/seguridad-social-supera-barrera-225-millones-afiliados-sumar-41727-ocupados-julio_446546.html'],
   ['Bono Alquiler Joven y Plan Estatal 2026-2030', 'https://www.ineaf.es/tribuna/bono-de-alquiler-joven/'],
   ['Abono único de transporte', 'https://www.elindependiente.com/economia/2025/12/16/abono-transporte-anunciado-pedro-sanchez/'],
   ['Cobertura de las tarifas de transporte (UITP)', 'https://www.uitp.org/wp-content/uploads/sites/7/2025/10/20251002_ES_Fare-Affordability_Policy-Brief_WEB.pdf'],

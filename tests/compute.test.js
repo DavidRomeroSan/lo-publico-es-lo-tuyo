@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { computeA, computeB, stageB } from '../src/compute.js';
+import { FACTS } from '../src/data.js';
+import { computeA, computeB, stageB, pickFacts, randomFacts } from '../src/compute.js';
 
 const base = { ciudad: 'madrid', edad: 28, sit: 'trabajo', estudios: ['cole'], vivienda: 'familia', adultos: 1, medico: 0, esp: 0, psico: 0, gordo: '', emerg: '', transp: 'nunca', deporte: ['none'], cultura: ['none'], worker: 'profe' };
 
@@ -55,4 +56,27 @@ test('las pensiones de la familia suman a la casa y no a ti', () => {
   assert.equal(r.personal, 1461);
   assert.equal(r.famV, 2 * 21976);
   assert.equal(r.casa, 1461 + 2 * 21976);
+});
+
+test('el top 5 siempre tiene cinco, ordenado y con una entrada por servicio', () => {
+  const vacio = computeA(base);
+  assert.equal(vacio.top.length, 5);
+  const lleno = computeA({ ...base, visitas: 10, medico: 7, esp: 4, psico: 8, gordo: 'ambas', transp: 'diario', deporte: ['gym'], cultura: ['museo'], culturaN: 7, emerg: 'dana' });
+  [vacio, lleno].forEach((r) => {
+    for (let i = 1; i < r.top.length; i++) assert.ok(r.top[i - 1].v >= r.top[i].v);
+    const g = r.top.map((x) => x.grp + x.label);
+    assert.equal(new Set(g).size, g.length);
+    assert.equal(r.top.filter((x) => x.grp === 'Sanidad').length <= 1, true);
+  });
+});
+
+test('la batería tiene 15 datos y se eligen 3 de áreas distintas', () => {
+  assert.equal(Object.keys(FACTS).length, 15);
+  for (let i = 0; i < 50; i++) {
+    const f = randomFacts(3, { prefer: 'Sanidad' });
+    assert.equal(f.length, 3);
+    assert.equal(f[0][3], 'Sanidad');
+    assert.equal(new Set(f.map((x) => x[3])).size, 3);
+  }
+  assert.equal(pickFacts({}, computeA(base)).length, 3);
 });

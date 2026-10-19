@@ -3,7 +3,7 @@ import { P, NOVES, US, FACTS, SITE } from './data.js';
 import { ico, ROW } from './icons.js';
 import { art } from './art.js';
 import { isStudent, WORKER, GRP_ICO, CLUB, CLUB_B } from './questions.js';
-import { pickFacts } from './compute.js';
+import { pickFacts, randomFacts } from './compute.js';
 
 export const eur = (n) => new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0, useGrouping: 'always' }).format(Math.round(n)) + ' €';
 export const usd = (n) => new Intl.NumberFormat('es-ES', { maximumFractionDigits: 0, useGrouping: 'always' }).format(Math.round(n)) + ' $';
@@ -22,7 +22,7 @@ const factsBlock = (F) => `<div class="facts">${F.map(([i, b, t]) => `<div>${ico
 const closing = `<div class="mosaic">${['hospital', 'school', 'bus', 'house', 'tree', 'fire'].map((k) => art(k, 'tile')).join('')}</div><h2 class="disp l">Antes de conocer el mundo, ya había algo cuidando de ti.</h2><p class="eyebrow">${SITE.lema}</p>`;
 
 const cardSlide = `<p class="eyebrow acc">Compártelo</p><div class="cardtabs" id="cardTabs"></div><div id="cardBox" class="cardbox"><p class="small">Preparando tus tarjetas…</p></div>
-  <div class="cardactions"><button class="btn" id="shareBtn" type="button">Compartir esta</button><button class="btn ghost" id="dlBtn" type="button">Descargar</button><button class="btn ghost" id="shareAllBtn" type="button">Compartir las 3</button></div>`;
+  <div class="cardactions"><button class="btn" id="shareBtn" type="button">Compartir esta</button><button class="btn ghost" id="dlBtn" type="button">Descargar</button><button class="btn ghost" id="shareAllBtn" type="button">Compartir todas</button></div>`;
 const pctLines = (vida, vt) => vida.filter((x) => x[1] > 0).sort((x, y) => y[1] - x[1]).slice(0, 5).map(([l, v]) => [l, Math.round((v / vt) * 100) + ' %']);
 
 export function buildA(r, a) {
@@ -40,12 +40,12 @@ export function buildA(r, a) {
     SL.push(['red', `${art('fire')}<p class="eyebrow">Este año te salvaron</p><h2 class="disp l">${t[0]}</h2><p>${t[1]}</p><p class="small">Lo que vale eso no cabe en una cifra.</p>`]);
   }
 
-  if (r.ranked.length) {
-    const top = r.ranked[0][1];
-    SL.push(['white', `${art(GRP_ICO[top.grp] || 'heart')}<p class="eyebrow acc">Tu nº 1 del año</p><h2 class="disp xl">${top.label}</h2><p>Sin lo público, solo esto te habría costado <b class="acc">${eur(top.v)}</b> en ${city}.</p>`]);
-    const t5 = r.ranked.slice(0, 5);
-    const max = t5[0][1].v;
-    SL.push(['red', `${art('hands', 'sm')}<p class="eyebrow">Tu top de lo público</p><ol class="rank">${t5.map(([, x], i) => `<li><span class="n">${i + 1}</span><span class="name">${x.label}</span><span class="eur">${eur(x.v)}</span><span class="bar"><i style="width:${Math.max(4, (x.v / max) * 100)}%"></i></span></li>`).join('')}</ol><p class="small">Lo que pagarías sin lo público, a precios privados de ${city}.</p>`]);
+  {
+    const T = r.top; const top = T[0];
+    const money = (x) => (x.est ? '≈ ' : '') + eur(x.v);
+    SL.push(['white', `${art(GRP_ICO[top.grp] || 'heart')}<p class="eyebrow acc">Tu nº 1 del año</p><h2 class="disp xl">${top.label}</h2><p>${top.est ? `Es lo que lo público pone por ti cada año, lo notes o no: <b class="acc">${money(top)}</b>.` : `Sin lo público, solo esto te habría costado <b class="acc">${eur(top.v)}</b> en ${city}.`}</p>`]);
+    const max = T[0].v; const sum = T.reduce((t, x) => t + x.v, 0);
+    SL.push(['red', `<p class="eyebrow">Lo más importante</p><h2 class="disp l">Tu top 5 de lo público</h2><ol class="rank">${T.map((x, i) => `<li class="${i === 0 ? 'first' : ''}"><span class="n">${i + 1}</span>${ico(GRP_ICO[x.grp] || 'heart')}<span class="name">${x.label}</span><span class="eur">${money(x)}</span><span class="bar"><i style="width:${Math.max(6, Math.sqrt(x.v / max) * 100)}%"></i></span></li>`).join('')}</ol><p class="lg">Entre los cinco: <b class="acc">${eur(sum)}</b> al año.</p><p class="small">Precios privados de ${city}. Con ≈, estimación con el gasto público medio por persona (IGAE 2024).</p>`]);
   }
 
   SL.push(['ink', `${art('city')}<p class="eyebrow">Lo que no ves</p><p class="big m">${eur(NOVES)}</p><p>pone lo público cada año por ti en cosas que usas sin darte cuenta.</p><div class="split"><div><span>Seguridad, bomberos y emergencias</span><span>${eur(P.seguridad)}</span></div><div><span>Agua, alumbrado, residuos y medio ambiente</span><span>${eur(P.ciudad)}</span></div><div><span>Cultura, ocio y deporte</span><span>${eur(P.ocio)}</span></div></div><p class="small">Gasto público por habitante en 2024 (IGAE).</p>`]);
@@ -62,7 +62,7 @@ export function buildA(r, a) {
   }
 
   if (a.pensF || a.dep) {
-    SL.push(['ink', `${art('hands')}<p class="eyebrow">Los tuyos</p>${a.pensF ? `<p class="big m">${eur(r.famV)}</p><p>pone lo público cada año en las pensiones de tu familia (${a.pensF}), con la pensión media de jubilación.</p>` : '<h2 class="disp xl">No están solos</h2>'}${a.dep ? '<p>Y en los cuidados: 1,65 millones de personas reciben ya una prestación de dependencia. Es la cifra más alta de la historia.</p>' : ''}<p class="small">Pensión media de jubilación, abril de 2026. Beneficiarios de dependencia, primer trimestre de 2026.</p>`]);
+    SL.push(['ink', `${art('hands')}<p class="eyebrow">Los tuyos</p>${a.pensF ? `<p class="big m">${eur(r.famV)}</p><p>pone lo público cada año en las pensiones de tu familia (${a.pensF}), con la pensión media de jubilación.</p>` : '<h2 class="disp xl">No están solos</h2>'}${a.dep ? `<p>${a.pensF ? 'Y en' : 'En'} los cuidados: 1,65 millones de personas reciben ya una prestación de dependencia. Es la cifra más alta de la historia.</p>` : ''}<p class="small">Pensión media de jubilación, abril de 2026. Beneficiarios de dependencia, primer trimestre de 2026.</p>`]);
   }
 
   if (a.worker === 'otro' && a.workerTxt) {
@@ -94,7 +94,8 @@ export function buildA(r, a) {
 
   const foot = `Precios privados de ${city} y gasto público medio`;
   const cards = [
-    { id: 'mi-ano', label: 'Mi año', eyebrow: 'Lo público me ha salvado de pagar', total: eur(r.personal), lines: r.ranked.slice(0, 4).map(([, x]) => [x.label, eur(x.v)]), tag: cl[0], icons: [GRP_ICO[r.club] || 'heart'], foot },
+    { id: 'mi-ano', label: 'Mi año', eyebrow: 'Lo público me ha salvado de pagar', total: eur(r.personal), lines: r.top.slice(0, 4).map((x) => [x.label, (x.est ? '≈ ' : '') + eur(x.v)]), tag: cl[0], icons: [GRP_ICO[r.club] || 'heart'], foot },
+    { id: 'mi-top5', label: 'Mi top 5', eyebrow: 'Mi top 5 de lo público', total: eur(r.top.reduce((t, x) => t + x.v, 0)), lines: r.top.map((x) => [x.label, (x.est ? '≈ ' : '') + eur(x.v)]), tag: 'Mi top 5', icons: [GRP_ICO[r.top[0].grp] || 'heart'], foot },
     { id: 'mi-vida', label: 'Mi vida', eyebrow: `Mis ${a.edad} años en lo público`, total: eur(vt), lines: pctLines(r.vida, vt), tag: 'Desde que nací', icons: ['book'], foot: 'Gasto público medio por persona y año' },
     { id: 'eeuu', label: 'EE. UU.', eyebrow: 'Si viviera en Estados Unidos', total: usd(usT), lines: us.slice(0, 4).map(([l, v]) => [l, usd(v)]), tag: 'Aquí no lo pago', icons: ['hospital'], foot: 'KFF 2025 y College Board 2025-26' }
   ];
@@ -112,7 +113,7 @@ export function buildB(r) {
   SL.push(['pink', `${art('book', 'sm')}<p class="eyebrow acc">Lo que más has usado</p>${pctBars(r.vida, vt)}<p class="small">Reparto de lo que lo público ha puesto por ti, de los 0 a los ${r.age} años.</p>`]);
   const vs = Math.round((r.visitas / 5.1 - 1) * 100);
   SL.push(['white', `${art('hospital')}<p class="eyebrow acc">Gente como tú</p><p class="big m acc-text">${dec(r.visitas)}</p><p>visitas al médico de familia al año. ${quien} van un ${Math.abs(vs)} % ${vs >= 0 ? 'más' : 'menos'} que la media española.</p><p class="small">Estimación orientativa por edad y sexo.</p>`]);
-  const facts = [r.age <= 24 ? FACTS.Educación : FACTS.Sanidad, r.age <= 30 ? FACTS.Transporte : FACTS.Protección, FACTS.Cultura];
+  const facts = randomFacts(3, { prefer: r.age <= 24 ? 'Educación' : 'Sanidad' });
   SL.push(['pink', `<p class="eyebrow acc">Lo público ha mejorado</p>${factsBlock(facts)}`]);
   SL.push(['ink', `${art(cb[0])}<p class="eyebrow">Tu club</p><h2 class="disp xl"><span class="acc">${r.club}</span></h2><p>${cb[1]}</p>`]);
   if (r.serv) SL.push(['white', `${art('heart')}<p class="eyebrow acc">Tu servicio favorito</p><h2 class="disp l">«${esc(r.serv)}»</h2><p>No lo cambiarías por nada. Y está ahí porque lo sostenemos entre todos.</p>`]);

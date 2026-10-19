@@ -85,23 +85,39 @@ export function computeA(a) {
   if (a.vivienda === 'publica') vida.push(['Vivienda', L.vpo.v]);
   const vidaTotal = vida.reduce((s, x) => s + x[1], 0);
 
+  // Top 5: una entrada por servicio (para que no gane una sola área) y, si faltan,
+  // se completa con estimaciones del gasto público medio (IGAE) que nos benefician a todos.
+  const GL = { Sanidad: 'Tu sanidad', Educación: 'Tu educación', Protección: 'Tu protección social', Vivienda: 'Tu vivienda', Transporte: 'Tu transporte', Deporte: 'Tu deporte', Cultura: 'Tu cultura' };
+  const byG = {};
+  Object.values(L).forEach((x) => { if (x.grp !== 'Ciudad') (byG[x.grp] = byG[x.grp] || []).push(x); });
+  const topAll = Object.entries(byG).map(([g, xs]) => ({ grp: g, label: xs.length === 1 ? xs[0].label : GL[g] || g, v: xs.reduce((t, x) => t + x.v, 0), est: false }));
+  if (famV) topAll.push({ grp: 'Protección', label: 'Pensiones de tu familia', v: famV, est: false });
+  if (!byG.Sanidad) topAll.push({ grp: 'Sanidad', label: 'Tu sanidad, siempre ahí', v: P.saludPC, est: true });
+  topAll.push({ grp: 'Emergencias', label: a.emerg ? 'Bomberos, UME y emergencias' : 'Seguridad y emergencias', v: P.seguridad, est: true });
+  topAll.push({ grp: 'Ciudad', label: 'Agua, alumbrado y residuos', v: P.ciudad, est: true });
+  if (!byG.Cultura && !byG.Deporte) topAll.push({ grp: 'Cultura', label: 'Cultura, ocio y deporte', v: P.ocio, est: true });
+  if (!byG.Educación && !isStudent(a)) topAll.push({ grp: 'Educación', label: 'La educación que te dieron', v: Math.round(P.alumno / 4), est: true });
+  const top = topAll.map((x) => ({ ...x, v: Math.round(x.v) })).sort((x, y) => y.v - x.v).slice(0, 5);
   const ranked = Object.entries(L).filter(([k, x]) => x.v > 0 && k !== 'noves').sort((x, y) => y[1].v - x[1].v);
-  return { c, L, ranked, personal, K, kids, otros, otrosV, famV, casa, veces, vida, vidaTotal, club, G };
+  return { c, L, ranked, top, personal, K, kids, otros, otrosV, famV, casa, veces, vida, vidaTotal, club, G };
 }
 
-export function pickFacts(a, r) {
-  const out = [];
-  const push = (k) => { if (FACTS[k] && !out.includes(k)) out.push(k); };
-  if (a.emerg) push('Emergencias');
-  if (a.dep) push('Dependencia');
-  if (a.pensF) push('Pensiones');
-  const order = Object.entries(r.G)
-    .sort((x, y) => y[1] * (CLUB_W[y[0]] || 1) - x[1] * (CLUB_W[x[0]] || 1))
-    .map((x) => x[0]);
-  order.forEach((g) => { if (g === 'Vivienda') push(a.bono ? 'ViviendaBono' : 'Vivienda'); else push(g); });
-  if (a.bebe) push('Protección');
-  push('Sanidad'); push('Educación'); push('Medio');
-  return out.slice(0, 3).map((k) => FACTS[k]);
+// Elige n datos al azar de la batería, como mucho uno por área. `prefer` fuerza uno de esa área.
+export function randomFacts(n, { prefer = null, bono = false } = {}, rnd = Math.random) {
+  const keys = Object.keys(FACTS).filter((k) => (k === 'ViviendaBono' ? bono : k === 'Vivienda' ? !bono : true));
+  for (let i = keys.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [keys[i], keys[j]] = [keys[j], keys[i]]; }
+  const pick = []; const used = new Set();
+  const take = (k) => { pick.push(FACTS[k]); used.add(FACTS[k][3]); };
+  const first = prefer && keys.find((k) => FACTS[k][3] === prefer);
+  if (first) take(first);
+  keys.forEach((k) => { if (pick.length < n && !used.has(FACTS[k][3])) take(k); });
+  return pick;
+}
+
+export function pickFacts(a, r, rnd = Math.random) {
+  const grp = Object.entries(r.G).sort((x, y) => y[1] * (CLUB_W[y[0]] || 1) - x[1] * (CLUB_W[x[0]] || 1)).map((x) => x[0])[0];
+  const prefer = grp === 'Emergencias' ? 'Medio' : grp;
+  return randomFacts(3, { prefer, bono: !!a.bono }, rnd);
 }
 
 // ---- Versión B ----
